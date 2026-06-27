@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SpeakNow AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .navbar-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .welcome-title h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .users-section {
+            margin-top: 40px;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 10px;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-username {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .user-card-body {
+            padding: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .user-info label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .user-info value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .online-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #27ae60;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .offline-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #bdc3c7;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 10px;
+            background: #ecf0f1;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .navbar-menu {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .user-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">🗣️ SpeakNow AI</div>
+        <div class="navbar-menu">
+            <a onclick="goToSection('practice')">Practice</a>
+            <a onclick="goToSection('chat')">Messages</a>
+            <a onclick="goToSection('profile')">Profile</a>
+            <a href="dictionary.html" style="color: white; text-decoration: none; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">📚 Dictionary</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-header">
+                <div class="welcome-title">
+                    <h1>Welcome back, <span id="displayName">User</span>! 👋</h1>
+                    <p>Ready to practice your English speaking skills?</p>
+                </div>
+            </div>
+
+            <div class="user-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalXp">0</div>
+                    <div class="stat-label">Total XP</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="userLevel">Beginner</div>
+                    <div class="stat-label">Level</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="overallScore">0</div>
+                    <div class="stat-label">Overall Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="practiceCount">0</div>
+                    <div class="stat-label">Sessions</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="/index.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: 600;">
+                    Start Learning Now
+                </a>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="users-section">
+            <div class="section-title">
+                <i class="fas fa-users"></i> Meet Other Learners
+            </div>
+            <div id="usersContainer" class="users-grid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading users...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.origin + '/api';
+        let currentUser = null;
+
+        // Check authentication
+        window.addEventListener('load', async () => {
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
+
+            if (!token || !userData) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userData);
+            document.getElementById('displayName').textContent = currentUser.name;
+            document.getElementById('totalXp').textContent = currentUser.totalXp || 0;
+            document.getElementById('userLevel').textContent = currentUser.level || 'Beginner';
+            document.getElementById('overallScore').textContent = currentUser.overallScore ? Math.round(currentUser.overallScore) : 0;
+            document.getElementById('practiceCount').textContent = currentUser.practiceCount || 0;
+
+            // Load users
+            await loadUsers();
+        });
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/discover`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    document.getElementById('usersContainer').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">😔</div>
+                            <p>Failed to load users. Please try again later.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (data.users.length === 0) {
+                    document.getElementById('usersContainer').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👥</div>
+                            <p>No other learners yet. Be the first!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const usersHTML = data.users
+                    .filter(user => user.id !== currentUser.id) // Filter out current user
+                    .map(user => `
+                        <div class="user-card">
+                            <div class="user-card-header">
+                                <div class="user-avatar">👤</div>
+                                <div class="user-name">${user.name || user.username}</div>
+                                <div class="user-username">@${user.username}</div>
+                            </div>
+                            <div class="user-card-body">
+                                <div class="user-info">
+                                    <label>Level:</label>
+                                    <value>${user.level}</value>
+                                </div>
+                                <div class="user-info">
+                                    <label>XP:</label>
+                                    <value>${user.totalXp}</value>
+                                </div>
+                                <div class="user-info">
+                                    <label>Status:</label>
+                                    <value>
+                                        ${user.isOnline ? '<span class="online-badge"></span>Online' : '<span class="offline-badge"></span>Offline'}
+                                    </value>
+                                </div>
+                                <div class="user-actions" style="margin-top: 15px;">
+                                    <button class="btn-primary" onclick="openChat(${user.id}, '${user.name}')">
+                                        <i class="fas fa-message"></i> Chat
+                                    </button>
+                                    <button class="btn-secondary" onclick="viewProfile(${user.id})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                document.getElementById('usersContainer').innerHTML = usersHTML;
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('usersContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p>Error loading users. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function openChat(userId, userName) {
+            // Store chat target in localStorage
+            localStorage.setItem('chatUserId', userId);
+            localStorage.setItem('chatUserName', userName);
+            window.location.href = `/chat-user.html?userId=${userId}`;
+        }
+
+        function viewProfile(userId) {
+            // Bisa nanti implementasiin profile view page
+            alert('Profile view akan segera tersedia!');
+        }
+
+        function goToSection(section) {
+            if (section === 'practice') {
+                window.location.href = '/index.html';
+            } else if (section === 'chat') {
+                window.location.href = '/chat-list.html';
+            } else if (section === 'profile') {
+                alert('Profile page akan segera tersedia!');
+            }
+        }
+
+        function logout() {
+            const token = localStorage.getItem('token');
+            
+            fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakNow AI - Chat Session</title>
+    <script src="/assets/js/auth-helper.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/elevenlabs-theme.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter','system-ui','sans-serif'],
+                        serif: ['EB Garamond', 'Georgia', 'serif']
+                    },
+                    colors: {
+                        slate: {
+                            50: '#f5f5f5',
+                            100: '#fafafa',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#57534e',
+                            700: '#44403c',
+                            800: '#292524',
+                            900: '#0c0a09',
+                            950: '#000000'
+                        },
+                        indigo: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce {
+            animation: bounce 0.6s infinite;
+        }
+        .alt-btn {
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+        }
+        /* Desktop: show on hover */
+        @media (hover: hover) {
+            .chat-bubble:hover .alt-btn {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+        /* Mobile: show when bubble is 'active' (tapped) */
+        .chat-bubble.bubble-active .alt-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* On mobile, hide the hover-only tailwind class */
+        @media (hover: none) {
+            .group-hover\:opacity-100 { opacity: 0; }
+            .bubble-active .group-hover\:opacity-100 { opacity: 1; }
+        }
+        /* ===== Onboarding Tutorial CSS ===== */
+        .ob-spotlight {
+            position: relative !important;
+            z-index: 9991 !important;
+            pointer-events: auto !important;
+            background: white !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.3s ease;
+        }
+        .dark .ob-spotlight {
+            background: #1c1917 !important;
+        }
+        .ob-elevated-actions {
+            z-index: 9995 !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        .timer-warning {
+            color: #dc2626;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .toast-container {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 320px;
+        }
+        .toast {
+            background: #292524;
+            color: #f5f5f5;
+            padding: 0.9rem 1.2rem;
+            border-radius: 99px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            animation: toastEnter 0.25s ease-out;
+        }
+        .toast.info { background: #292524; }
+        .toast.success { background: #16a34a; }
+        .toast.warning { background: #d97706; }
+        .toast.error { background: #dc2626; }
+        .toast.fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-200 transition-colors duration-300 relative">
+    
+    <!-- ElevenLabs Ambient Background Orbs -->
+    <div class="orb-container">
+        <div class="orb orb-mint"></div>
+        <div class="orb orb-peach"></div>
+        <div class="orb orb-lavender"></div>
+        <div class="orb orb-sky"></div>
+    </div>
+
+    <div class="container mx-auto px-6 py-8 max-w-3xl relative z-10">
+        
+        <!-- Header -->
+        <div class="relative z-10 flex justify-between items-center mb-8">
+            <div class="flex gap-2">
+                <a href="index.html" class="flex items-center gap-3 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white font-medium transition bg-white dark:bg-slate-900 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <i class="fas fa-arrow-left text-sm"></i> <span class="hidden sm:inline text-sm">Dashboard</span>
+                </a>
+                <button onclick="localStorage.removeItem('speaknow_onboarding_done'); startTutorial();" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white font-medium transition bg-white dark:bg-slate-900 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm" title="Ulangi Tutorial">
+                    <i class="fas fa-question-circle text-sm"></i> <span class="hidden sm:inline text-sm">Tutorial</span>
+                </button>
+            </div>
+            <div class="bg-white dark:bg-slate-900 px-5 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                <span id="modeLabel" class="font-serif font-light text-sm tracking-wide text-slate-900 dark:text-white">Free Chat</span>
+                <span class="w-px h-4 bg-slate-200 dark:bg-slate-800"></span>
+                <span id="levelLabel" class="text-[10px] font-bold text-stone-500 dark:text-stone-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full uppercase tracking-wider">Intermediate</span>
+            </div>
+        </div>
+        
+        <!-- Timer -->
+        <div id="timerContainer" class="text-center mb-4 hidden">
+            <div class="inline-block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-6 py-2 shadow-sm">
+                <i class="fas fa-hourglass-half text-amber-500 mr-2"></i>
+                <span id="timer" class="text-xl font-light font-serif text-slate-900 dark:text-white">00:00</span>
+            </div>
+        </div>
+        
+        <!-- Chat Container -->
+        <div id="chatBoxWrapper" class="relative z-10 bg-white/80 dark:bg-slate-900/80 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 h-[500px] mb-6 flex flex-col overflow-hidden">
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-6 relative z-10 custom-scrollbar">
+                <div id="chatMessages" class="space-y-6"></div>
+            </div>
+        </div>
+        
+        <!-- Score Card Modal -->
+        <div id="scoreCard" class="hidden fixed inset-0 z-[9995] flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm transition-opacity">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 w-full max-w-md overflow-hidden transform transition-all relative">
+                <div class="bg-slate-100 dark:bg-slate-800 p-5 text-slate-900 dark:text-white flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
+                    <h3 class="font-serif font-light text-lg flex items-center gap-2"><i class="fas fa-magic text-sm"></i> AI Grammar Analysis</h3>
+                    <button id="closeScoreBtn" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center transition focus:outline-none">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Grammar</p>
+                            <div class="flex items-baseline justify-center gap-0.5">
+                                <span id="grammarScoreValue" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</span>
+                                <span class="text-xs text-slate-400">/10</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Clarity</p>
+                            <div class="flex items-baseline justify-center gap-0.5">
+                                <span id="clarityScoreValue" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</span>
+                                <span class="text-xs text-slate-400">/10</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Confidence</p>
+                            <div class="flex items-baseline justify-center gap-0.5">
+                                <span id="confidenceScoreValue" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</span>
+                                <span class="text-xs text-slate-400">/10</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="grammarCorrectionDetail" class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl text-slate-700 dark:text-slate-300 text-sm leading-relaxed border border-slate-200 dark:border-slate-800 hidden shadow-inner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session Summary Modal -->
+        <div id="sessionSummary" class="hidden fixed inset-0 z-[9995] flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm transition-opacity">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 w-full max-w-lg overflow-hidden transform transition-all">
+                <div class="bg-slate-100 dark:bg-slate-800 p-5 text-slate-900 dark:text-white flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
+                    <div>
+                        <h3 class="font-serif font-light text-lg flex items-center gap-2"><i class="fas fa-flag-checkered text-sm"></i> Session Summary</h3>
+                        <p class="text-xs text-slate-400 font-medium">Review your performance</p>
+                    </div>
+                    <button id="closeSummaryBtn" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center transition focus:outline-none">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Messages</p>
+                            <p id="summaryMessages" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Duration</p>
+                            <p id="summaryDuration" class="text-2xl font-light font-serif text-slate-900 dark:text-white">00:00</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Checks</p>
+                            <p id="summaryChecks" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        </div>
+                        
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Avg Grammar</p>
+                            <p id="summaryGrammarAvg" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Avg Clarity</p>
+                            <p id="summaryClarityAvg" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
+                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Avg Confidence</p>
+                            <p id="summaryConfidenceAvg" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        </div>
+                    </div>
+                    <div id="summaryRecommendation" class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 mb-5 border border-slate-200 dark:border-slate-800"></div>
+                    <button id="restartSessionBtn" class="w-full bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white font-bold py-3.5 rounded-full transition shadow-sm flex justify-center items-center gap-2 group">
+                        <i class="fas fa-redo group-hover:-rotate-90 transition-transform duration-300"></i> Restart Session
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Grammar Panel -->
+        <div id="quickGrammarPanel" class="hidden relative z-10 mb-4 bg-slate-100/90 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 transform transition-all animate-slide-up">
+            <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div class="flex-1">
+                    <p id="quickGrammarText" class="text-sm text-slate-800 dark:text-slate-200 font-medium leading-relaxed"></p>
+                </div>
+                <div class="flex flex-col gap-2 flex-shrink-0">
+                    <button id="showDetailedScoreBtn" class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white hover:bg-slate-100 transition shadow-sm flex items-center justify-center group animate-pulse" title="View Score Details">
+                        <i class="fas fa-exclamation-circle group-hover:scale-110 transition-transform text-lg text-amber-500"></i>
+                    </button>
+                    <button onclick="document.getElementById('quickGrammarPanel').classList.add('hidden')" class="w-8 h-8 rounded-full text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="relative z-10 bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
+            <div class="flex flex-col sm:flex-row gap-3 items-center">
+                <div class="relative w-full">
+                    <input type="text" id="chatInput" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-full pl-5 pr-14 py-4 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-white transition font-medium" placeholder="Type your message here...">
+                    <button id="voiceBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-200/50 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition flex items-center justify-center group" title="Use voice input">
+                        <i class="fas fa-microphone group-hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
+                
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button id="hintBtn" class="hidden flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white px-5 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group" title="Get a hint for your answer">
+                        <i class="fas fa-lightbulb group-hover:scale-110 transition-transform"></i> <span class="hidden sm:inline">Hint</span>
+                    </button>
+                    <button id="grammarCheckBtn" class="flex-1 sm:flex-none bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-5 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group" title="Check grammar of your input">
+                        <i class="fas fa-magic group-hover:rotate-12 transition-transform"></i> <span class="hidden sm:inline">Fix</span>
+                    </button>
+                    <button id="sendBtn" class="flex-1 sm:flex-none bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white px-6 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group">
+                        <i class="fas fa-paper-plane group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i> <span class="hidden sm:inline">Send</span>
+                    </button>
+                    <button id="endSessionBtn" class="bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 px-4 py-4 rounded-full transition flex items-center justify-center" title="End Session">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="tutorialHintContainer" class="hidden mt-4 text-center text-[10px] text-slate-400 dark:text-slate-500 font-bold tracking-wider uppercase">
+                <i class="fas fa-lightbulb text-amber-400 mr-1"></i> <span id="inputHintText">Tap bubble & click 🔄 for styles • 🌐 for translate</span>
+            </div>
+        </div>
+
+        <!-- Hint Display -->
+        <div id="hintDisplay" class="mt-4 p-3 bg-yellow-50 rounded-lg hidden">
+            <i class="fas fa-lightbulb text-yellow-600 mr-2"></i>
+            <span id="hintText" class="text-yellow-700"></span>
+        </div>
+    </div>
+
+        <!-- Popup Alternative -->
+        <div id="altPopup" class="fixed hidden bg-white rounded-xl shadow-2xl p-4 max-w-sm z-50 border border-purple-200">
+            <div class="flex justify-between items-center mb-2">
+                <p class="font-semibold text-purple-800 text-sm">📝 Alternative Styles</p>
+                <button onclick="document.getElementById('altPopup').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-2 text-sm">
+                <p><span class="font-medium text-green-600">🌿 Natural:</span> <span id="popupNatural" class="text-gray-700"></span></p>
+                <p><span class="font-medium text-blue-600">🎓 IELTS/Academic:</span> <span id="popupIelts" class="text-gray-700"></span></p>
+                <p><span class="font-medium text-purple-600">😎 Slang/Casual:</span> <span id="popupSlang" class="text-gray-700"></span></p>
+            </div>
+        </div>
+        
+        <!-- Translate Popup -->
+        <div id="translatePopup" class="fixed hidden bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-4 max-w-sm w-full z-50 border border-slate-200 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-3">
+                <p class="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2"><i class="fas fa-language text-indigo-500"></i> Terjemahkan Pesan</p>
+                <button onclick="document.getElementById('translatePopup').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-2">
+                <button id="btnTransSmart" class="w-full text-left bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-4 py-2.5 rounded-xl text-sm font-medium transition flex justify-between items-center group">
+                    <span>Hanya Kosakata Baru (Smart)</span>
+                    <i class="fas fa-magic group-hover:scale-110 transition-transform"></i>
+                </button>
+                <button id="btnTransFull" class="w-full text-left bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-4 py-2.5 rounded-xl text-sm font-medium transition flex justify-between items-center group">
+                    <span>Terjemahkan Semua (Full)</span>
+                    <i class="fas fa-align-left group-hover:scale-110 transition-transform"></i>
+                </button>
+                <div id="translateResultContainer" class="hidden mt-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-700 max-h-48 overflow-y-auto custom-scrollbar">
+                    <p id="translateResultText" class="leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Onboarding Modal -->
+    <div id="obWelcomeModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
+        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-3xl shadow-2xl border border-white/20 dark:border-slate-800 w-full max-w-md overflow-hidden transform transition-all p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🚀</span>
+                <h3 class="font-extrabold text-xl bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">Selamat Datang di SpeakNow AI!</h3>
+            </div>
+            
+            <div class="space-y-4 text-sm leading-relaxed mb-6 font-medium text-slate-600 dark:text-slate-300">
+                <p>Mari belajar Bahasa Inggris secara interaktif dan menyenangkan dengan bantuan AI! Berikut adalah fitur utama yang bisa Anda gunakan:</p>
+                
+                <div class="flex gap-3 items-start bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <span class="text-xl mt-0.5">✍️</span>
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100">Ketik & Rekam Suara</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Tulis kalimat Bahasa Inggris Anda, atau rekam secara langsung menggunakan tombol 🎤 <strong>Mic</strong>.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 items-start bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <span class="text-xl mt-0.5">✨</span>
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100">Periksa & Perbaiki Grammar</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Tekan tombol <strong>Fix ✨</strong> untuk mengoreksi tata bahasa secara otomatis dan melihat kesalahan kalimat Anda.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 items-start bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <span class="text-xl mt-0.5">📊</span>
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100">Analisis Skor Performa</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Dapatkan analisis skor mendalam untuk Grammar, Clarity, dan Confidence melalui panel yang tersedia.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="obWelcomeStartBtn" onclick="startInteractiveTutorial()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl transition shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/35 flex justify-center items-center gap-2 text-sm">
+                Mulai Latihan <i class="fas fa-play text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== Tutorial Overlay & Floating Guide Card ===== -->
+    <div id="obOverlay" class="fixed inset-0 z-[9990] bg-slate-950/80 backdrop-blur-sm hidden transition-opacity duration-300 pointer-events-auto"></div>
+
+    <div id="obGuideCard" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[9992] w-full max-w-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-700 overflow-hidden">
+            <div id="obGuideCardInner" class="p-5"></div>
+        </div>
+    </div>
+
+    <div class="toast-container"></div>
+
+    <script>
+        const mode = localStorage.getItem('sessionMode');
+        const userId = localStorage.getItem('userId');
+        let sessionId = localStorage.getItem('chatSessionId');
+        let lastUserMessage = '';
+        let timerInterval;
+        let timeLeft = 0;
+        let sessionStats = {
+            messages: 0,
+            checks: 0,
+            grammarSum: 0,
+            claritySum: 0,
+            confidenceSum: 0,
+            lastFeedback: '',
+            startedAt: Date.now()
+        };
+        
+        if (!sessionId) {
+            sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('chatSessionId', sessionId);
+        }
+        
+        const modeLabel = document.getElementById('modeLabel');
+        const timerContainer = document.getElementById('timerContainer');
+        const hintBtn = document.getElementById('hintBtn');
+        
+        if (mode === 'practice') {
+            modeLabel.innerText = 'Free Chat 🟢';
+            timerContainer.classList.add('hidden');
+        } else if (mode === 'guided') {
+            modeLabel.innerText = 'Guided Mode 🟡';
+            timerContainer.classList.remove('hidden');
+            if (hintBtn) hintBtn.classList.remove('hidden');
+            timeLeft = 60;
+            startTimer();
+        } else if (mode === 'challenge') {
+            modeLabel.innerText = 'Challenge Mode 🔴';
+            timerContainer.classList.remove('hidden');
+            if (hintBtn) hintBtn.classList.add('hidden');
+            timeLeft = 30;
+            startTimer();
+        }
+        
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            const timerElement = document.getElementById('timer');
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (timerElement) timerElement.innerHTML = '00:00';
+                    alert('⏰ Time is up!');
+                } else {
+                    timeLeft--;
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerElement = document.getElementById('timer');
+            if (timerElement) {
+                timerElement.innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        function stopTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+        
+        let welcomeMessage = '';
+        if (mode === 'practice') {
+            welcomeMessage = "Hello! 👋 I'm your friendly English conversation partner. What would you like to talk about today?";
+        } else if (mode === 'guided') {
+            welcomeMessage = "Hello! I'm your English tutor. Let's practice together. You have 60 seconds to answer each question. How was your day?";
+        } else {
+            welcomeMessage = "Welcome to the Job Interview! I'm your HR interviewer. You have 30 seconds for each question. Tell me about yourself.";
+        }
+        
+        addMessage('ai', welcomeMessage);
+        
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const hintDisplay = document.getElementById('hintDisplay');
+            if (hintDisplay) hintDisplay.classList.add('hidden');
+            
+            sessionStats.messages += 1;
+            addMessage('user', message);
+            input.value = '';
+            input.disabled = true;
+            showTypingIndicator();
+            stopTimer();
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: parseInt(userId),
+                        sessionId: sessionId,
+                        message: message,
+                        mode: mode
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText || response.statusText}`);
+                }
+
+                const result = await response.json();
+                hideTypingIndicator();
+                addMessage('ai', result.message);
+                
+                if (mode === 'challenge') {
+                    await checkGrammarAndShowScore(message);
+                }
+                
+                if (mode === 'guided') {
+                    timeLeft = 60;
+                    startTimer();
+                } else if (mode === 'challenge') {
+                    timeLeft = 30;
+                    startTimer();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('ai', 'Sorry, having trouble connecting.');
+            }
+            
+            input.disabled = false;
+            input.focus();
+            scrollToBottom();
+        }
+        
+        async function checkGrammarAndShowScore(text) {
+            try {
+                const response = await fetch('/api/grammar-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        mode: mode
+                    })
+                });
+                
+                if (!response.ok) return;
+                
+                const result = await response.json();
+                
+                const grammarValue = document.getElementById('grammarScoreValue');
+                const grammarBar = document.getElementById('grammarScoreBar');
+                const clarityValue = document.getElementById('clarityScoreValue');
+                const clarityBar = document.getElementById('clarityScoreBar');
+                const confidenceValue = document.getElementById('confidenceScoreValue');
+                const confidenceBar = document.getElementById('confidenceScoreBar');
+                const correctionDetail = document.getElementById('grammarCorrectionDetail');
+                const scoreCard = document.getElementById('scoreCard');
+                
+                if (grammarValue) grammarValue.innerText = result.grammarScore || 0;
+                if (grammarBar) grammarBar.style.width = ((result.grammarScore || 0) * 10) + '%';
+                if (clarityValue) clarityValue.innerText = result.clarityScore || 0;
+                if (clarityBar) clarityBar.style.width = ((result.clarityScore || 0) * 10) + '%';
+                if (confidenceValue) confidenceValue.innerText = result.confidenceScore || 0;
+                if (confidenceBar) confidenceBar.style.width = ((result.confidenceScore || 0) * 10) + '%';
+                
+                if (correctionDetail && result.feedback) {
+                    correctionDetail.innerHTML = result.feedback.replace(/\n/g, '<br>');
+                    correctionDetail.classList.remove('hidden');
+                }
+                
+                const quickGrammarPanel = document.getElementById('quickGrammarPanel');
+                const quickGrammarText = document.getElementById('quickGrammarText');
+                const showDetailedScoreBtn = document.getElementById('showDetailedScoreBtn');
+
+                if (quickGrammarText && result.feedback) {
+                    quickGrammarText.innerHTML = `<strong>Grammar Check:</strong> ${result.feedback.replace(/\n/g, '<br>')}`;
+                }
+                
+                if (quickGrammarPanel) {
+                    quickGrammarPanel.classList.remove('hidden');
+                }
+
+                if (showDetailedScoreBtn) {
+                    showDetailedScoreBtn.onclick = () => {
+                        if (scoreCard) scoreCard.classList.remove('hidden');
+                    };
+                }
+                
+                sessionStats.checks += 1;
+                sessionStats.grammarSum += Number(result.grammarScore) || 0;
+                sessionStats.claritySum += Number(result.clarityScore) || 0;
+                sessionStats.confidenceSum += Number(result.confidenceScore) || 0;
+                updateSessionSummaryPanel();
+                
+            } catch (error) {
+                console.error('Error checking grammar:', error);
+            }
+        }
+        
+        function addMessage(role, text) {
+            const container = document.getElementById('chatMessages');
+            const safeText = escapeHtml(text);
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start gap-3 ${role === 'user' ? 'justify-end' : ''} chat-bubble group`;
+            
+            if (role === 'user') {
+                lastUserMessage = text;
+                messageDiv.innerHTML = `
+                    <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-[85%] relative shadow-md shadow-indigo-600/20 font-medium">
+                        <p class="text-white leading-relaxed">${safeText}</p>
+                        <button onclick="showAlternative('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn absolute -left-3 -top-3 bg-white dark:bg-slate-800 hover:bg-purple-500 hover:text-white text-indigo-500 rounded-full w-8 h-8 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm border border-indigo-100 dark:border-slate-700">
+                            <i class="fas fa-sync-alt text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+                        <i class="fas fa-user text-indigo-600 dark:text-indigo-400"></i>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+                        <i class="fas fa-robot text-emerald-600 dark:text-emerald-400"></i>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm p-4 max-w-[85%] relative shadow-md shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 font-medium">
+                        <p class="leading-relaxed">${safeText}</p>
+                        <div class="absolute -right-3 -top-3 flex flex-row-reverse gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                            <button onclick="showAlternative('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn bg-white dark:bg-slate-700 hover:bg-purple-500 hover:text-white text-slate-500 rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-600" title="Alternative Styles">
+                                <i class="fas fa-sync-alt text-[10px]"></i>
+                            </button>
+                            <button onclick="showTranslateOptions('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn bg-white dark:bg-slate-700 hover:bg-emerald-500 hover:text-white text-slate-500 rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-600" title="Terjemahkan">
+                                <i class="fas fa-language text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        async function showAlternative(text, btnElement) {
+            if (event) event.stopPropagation();
+            
+            showTypingIndicator();
+            
+            const popup = document.getElementById('altPopup');
+            const rect = btnElement.getBoundingClientRect();
+            
+            document.getElementById('popupNatural').innerText = 'Loading...';
+            document.getElementById('popupIelts').innerText = 'Loading...';
+            document.getElementById('popupSlang').innerText = 'Loading...';
+            
+            popup.style.left = (rect.left - 200) + 'px';
+            popup.style.top = (rect.bottom + 10) + 'px';
+            popup.classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/api/alternative', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        mode: mode
+                    })
+                });
+                
+                const result = await response.json();
+                hideTypingIndicator();
+                
+                document.getElementById('popupNatural').innerText = result.naturalAnswer || text;
+                document.getElementById('popupIelts').innerText = result.academicAnswer || text;
+                document.getElementById('popupSlang').innerText = result.casualAnswer || text;
+                
+            } catch (error) {
+                hideTypingIndicator();
+                console.error('Error:', error);
+                document.getElementById('popupNatural').innerText = 'Error!';
+                document.getElementById('popupIelts').innerText = 'Try again';
+                document.getElementById('popupSlang').innerText = '';
+            }
+        }
+        
+        let currentTranslateMessage = '';
+        
+        function showTranslateOptions(text, btnElement) {
+            if (event) event.stopPropagation();
+            
+            const popup = document.getElementById('translatePopup');
+            const rect = btnElement.getBoundingClientRect();
+            
+            currentTranslateMessage = text;
+            document.getElementById('translateResultContainer').classList.add('hidden');
+            document.getElementById('translateResultText').innerText = '';
+            
+            popup.style.left = Math.max(10, rect.left - 250) + 'px';
+            popup.style.top = (rect.bottom + 10) + 'px';
+            popup.classList.remove('hidden');
+        }
+        
+        async function executeTranslation(type) {
+            const resultContainer = document.getElementById('translateResultContainer');
+            const resultText = document.getElementById('translateResultText');
+            
+            resultContainer.classList.remove('hidden');
+            resultText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menerjemahkan...';
+            
+            try {
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: currentTranslateMessage,
+                        type: type,
+                        userId: userId
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.translation) {
+                    resultText.innerHTML = result.translation.replace(/\n/g, '<br>');
+                } else {
+                    resultText.innerText = 'Respons tidak valid dari server.';
+                }
+            } catch (error) {
+                console.error('Translation error:', error);
+                resultText.innerText = 'Maaf, gagal menerjemahkan. Coba lagi.';
+            }
+        }
+        
+        function showTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex items-start gap-3';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-blue-600 text-sm"></i>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-3">
+                    <div class="flex gap-1">
+                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(typingDiv);
+            scrollToBottom();
+        }
+        
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+        
+        function scrollToBottom() {
+            const container = document.getElementById('chatContainer');
+            if (container) container.scrollTop = container.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            return text.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function formatDuration(durationMs) {
+            const seconds = Math.floor(durationMs / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const remaining = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remaining.toString().padStart(2, '0')}`;
+        }
+
+        function getRecommendation() {
+            if (sessionStats.checks === 0) {
+                return 'Lakukan pemeriksaan grammar untuk mendapatkan laporan sesi yang lengkap.';
+            }
+            const avgGrammar = sessionStats.grammarSum / sessionStats.checks;
+            const avgClarity = sessionStats.claritySum / sessionStats.checks;
+            const avgConfidence = sessionStats.confidenceSum / sessionStats.checks;
+            if (avgGrammar < 6) {
+                return 'Fokus perbaikan pada struktur kalimat dan tense. Coba gunakan pola yang lebih sederhana dulu.';
+            }
+            if (avgClarity < 6) {
+                return 'Jawaban masih perlu dirapikan agar lebih jelas. Gunakan kalimat pendek dan langsung pada poin.';
+            }
+            if (avgConfidence < 6) {
+                return 'Gunakan kata-kata yang lebih tegas dan hindari terlalu banyak filler.';
+            }
+            return 'Bagus! Teruskan dengan jawaban yang lebih variatif dan percaya diri.';
+        }
+
+        function updateSessionSummaryPanel() {
+            const summaryMessages = document.getElementById('summaryMessages');
+            const summaryChecks = document.getElementById('summaryChecks');
+            const summaryGrammarAvg = document.getElementById('summaryGrammarAvg');
+            const summaryClarityAvg = document.getElementById('summaryClarityAvg');
+            const summaryConfidenceAvg = document.getElementById('summaryConfidenceAvg');
+            const summaryDuration = document.getElementById('summaryDuration');
+            const summaryRecommendation = document.getElementById('summaryRecommendation');
+            
+            if (summaryMessages) summaryMessages.innerText = sessionStats.messages;
+            if (summaryChecks) summaryChecks.innerText = sessionStats.checks;
+            if (summaryGrammarAvg) summaryGrammarAvg.innerText = sessionStats.checks ? Math.round(sessionStats.grammarSum / sessionStats.checks) : 0;
+            if (summaryClarityAvg) summaryClarityAvg.innerText = sessionStats.checks ? Math.round(sessionStats.claritySum / sessionStats.checks) : 0;
+            if (summaryConfidenceAvg) summaryConfidenceAvg.innerText = sessionStats.checks ? Math.round(sessionStats.confidenceSum / sessionStats.checks) : 0;
+            if (summaryDuration) summaryDuration.innerText = formatDuration(Date.now() - sessionStats.startedAt);
+            if (summaryRecommendation) summaryRecommendation.innerText = getRecommendation();
+        }
+
+        async function showSessionSummary() {
+            updateSessionSummaryPanel();
+            const sessionSummary = document.getElementById('sessionSummary');
+            const scoreCard = document.getElementById('scoreCard');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const grammarCheckBtn = document.getElementById('grammarCheckBtn');
+            
+            if (sessionSummary) sessionSummary.classList.remove('hidden');
+            if (scoreCard) scoreCard.classList.add('hidden');
+            if (chatInput) chatInput.disabled = true;
+            if (sendBtn) sendBtn.disabled = true;
+            if (grammarCheckBtn) grammarCheckBtn.disabled = true;
+            stopTimer();
+
+            try {
+                const finalScore = sessionStats.checks ? (sessionStats.grammarSum + sessionStats.claritySum + sessionStats.confidenceSum) / (3 * sessionStats.checks) : 0;
+                const response = await fetch('/api/session/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: parseInt(userId) || 1,
+                        mode: mode || 'practice',
+                        finalScore: finalScore * 10
+                    })
+                });
+                const result = await response.json();
+                if(result.xpEarned) {
+                    showToast(`Sesi selesai! Anda mendapat ${result.xpEarned} XP 🎉`, 'success');
+                }
+            } catch (e) {
+                console.error('Failed to save session:', e);
+            }
+        }
+
+        function resetSession() {
+            sessionStats = {
+                messages: 0,
+                checks: 0,
+                grammarSum: 0,
+                claritySum: 0,
+                confidenceSum: 0,
+                lastFeedback: '',
+                startedAt: Date.now()
+            };
+            const sessionSummary = document.getElementById('sessionSummary');
+            const scoreCard = document.getElementById('scoreCard');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const grammarCheckBtn = document.getElementById('grammarCheckBtn');
+            
+            if (sessionSummary) sessionSummary.classList.add('hidden');
+            if (scoreCard) scoreCard.classList.add('hidden');
+            if (chatMessages) chatMessages.innerHTML = '';
+            if (chatInput) chatInput.disabled = false;
+            if (sendBtn) sendBtn.disabled = false;
+            if (grammarCheckBtn) grammarCheckBtn.disabled = false;
+            
+            addMessage('ai', welcomeMessage);
+            if (mode === 'guided') {
+                timeLeft = 60;
+                startTimer();
+            } else if (mode === 'challenge') {
+                timeLeft = 30;
+                startTimer();
+            }
+        }
+
+        // Voice recognition
+        let mediaRecognition;
+        let isListening = false;
+        const voiceButton = document.getElementById('voiceBtn');
+
+        function showToast(message, type = 'info', duration = 3500) {
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 250);
+            }, duration);
+        }
+
+        function stopVoiceIndicator() {
+            isListening = false;
+            if (voiceButton) {
+                voiceButton.classList.remove('bg-red-500', 'hover:bg-red-600', 'text-white');
+                voiceButton.classList.add('bg-gray-300', 'hover:bg-green-500', 'text-gray-700');
+                voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+            }
+        }
+
+        function initializeVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                if (voiceButton) {
+                    voiceButton.disabled = true;
+                    voiceButton.title = 'Voice input not supported';
+                    voiceButton.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            mediaRecognition = new SpeechRecognition();
+            mediaRecognition.lang = 'en-US';
+            mediaRecognition.continuous = false;
+            mediaRecognition.interimResults = false;
+
+            mediaRecognition.onstart = () => {
+                isListening = true;
+                if (voiceButton) {
+                    voiceButton.classList.remove('bg-gray-300', 'hover:bg-green-500', 'text-gray-700');
+                    voiceButton.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white');
+                    voiceButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+                }
+                showToast('🎤 Listening... Speak now!', 'info');
+            };
+
+            mediaRecognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript || '';
+                const inputField = document.getElementById('chatInput');
+                if (inputField) inputField.value = transcript;
+                stopVoiceIndicator();
+                showToast('Voice detected! Click Send to submit.', 'success');
+            };
+
+            mediaRecognition.onerror = (event) => {
+                console.error('Voice error:', event.error);
+                stopVoiceIndicator();
+                showToast('Voice error: ' + event.error, 'error');
+            };
+
+            mediaRecognition.onend = () => {
+                stopVoiceIndicator();
+            };
+        }
+
+        if (voiceButton) {
+            voiceButton.addEventListener('click', () => {
+                if (!mediaRecognition) {
+                    showToast('Voice recognition not available.', 'warning');
+                    return;
+                }
+                if (isListening) {
+                    mediaRecognition.stop();
+                } else {
+                    try {
+                        mediaRecognition.start();
+                    } catch (error) {
+                        console.error('Error starting recognition:', error);
+                    }
+                }
+            });
+        }
+
+        initializeVoiceRecognition();
+
+        // Event Listeners
+        const sendBtn = document.getElementById('sendBtn');
+        const grammarCheckBtn = document.getElementById('grammarCheckBtn');
+        const endSessionBtn = document.getElementById('endSessionBtn');
+        const closeSummaryBtn = document.getElementById('closeSummaryBtn');
+        const restartSessionBtn = document.getElementById('restartSessionBtn');
+        const closeScoreBtn = document.getElementById('closeScoreBtn');
+        const chatInput = document.getElementById('chatInput');
+        
+        if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if (grammarCheckBtn) {
+            grammarCheckBtn.addEventListener('click', async () => {
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                if (!text) {
+                    alert('Type something first to check grammar!');
+                    return;
+                }
+                await checkGrammarAndShowScore(text);
+            });
+        }
+        if (endSessionBtn) endSessionBtn.addEventListener('click', showSessionSummary);
+        if (closeSummaryBtn) closeSummaryBtn.addEventListener('click', () => {
+            const sessionSummary = document.getElementById('sessionSummary');
+            if (sessionSummary) sessionSummary.classList.add('hidden');
+        });
+        if (restartSessionBtn) restartSessionBtn.addEventListener('click', resetSession);
+        if (closeScoreBtn) closeScoreBtn.addEventListener('click', () => {
+            const scoreCard = document.getElementById('scoreCard');
+            if (scoreCard) scoreCard.classList.add('hidden');
+        });
+        if (chatInput) {
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+            chatInput.focus();
+        }
+        
+        const btnTransSmart = document.getElementById('btnTransSmart');
+        const btnTransFull = document.getElementById('btnTransFull');
+        if (btnTransSmart) btnTransSmart.addEventListener('click', () => executeTranslation('smart'));
+        if (btnTransFull) btnTransFull.addEventListener('click', () => executeTranslation('full'));
+        
+        if (hintBtn) {
+            hintBtn.addEventListener('click', async () => {
+                const hintDisplay = document.getElementById('hintDisplay');
+                const hintText = document.getElementById('hintText');
+                
+                if (!hintDisplay || !hintText) return;
+                
+                hintDisplay.classList.remove('hidden');
+                hintText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting hint...';
+                
+                const aiBubbles = document.querySelectorAll('#chatMessages .chat-bubble');
+                let lastAIMessage = "How was your day?";
+                for (let i = aiBubbles.length - 1; i >= 0; i--) {
+                    const bubble = aiBubbles[i];
+                    if (!bubble.classList.contains('justify-end')) {
+                        const p = bubble.querySelector('p');
+                        if (p) {
+                            lastAIMessage = p.innerText;
+                            break;
+                        }
+                    }
+                }
+                
+                const currentInputValue = document.getElementById('chatInput').value.trim();
+                
+                try {
+                    const response = await fetch('/api/hint', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: currentInputValue,
+                            lastAIMessage: lastAIMessage,
+                            mode: mode
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    if (result.hint) {
+                        hintText.innerHTML = result.hint;
+                    } else {
+                        hintText.innerText = 'Gagal mendapatkan petunjuk.';
+                    }
+                } catch (error) {
+                    console.error('Error getting hint:', error);
+                    hintText.innerText = 'Maaf, gagal mengambil petunjuk.';
+                }
+            });
+        }
+        
+        // ===== MOBILE BUBBLE TOUCH TOGGLE =====
+        let activeBubble = null;
+        document.addEventListener('click', function(e) {
+            const bubble = e.target.closest('.chat-bubble');
+            const altBtn = e.target.closest('.alt-btn');
+            const altPopupEl = document.getElementById('altPopup');
+            const transPopupEl = document.getElementById('translatePopup');
+            const guideCard = document.getElementById('obGuideCard');
+
+            // If clicking inside guide card, don't close anything
+            if (guideCard && guideCard.contains(e.target)) return;
+
+            // If clicking on a bubble (but not an action button), toggle active state
+            if (bubble && !altBtn && !altPopupEl?.contains(e.target) && !transPopupEl?.contains(e.target)) {
+                if (activeBubble && activeBubble !== bubble) {
+                    activeBubble.classList.remove('bubble-active');
+                }
+                bubble.classList.toggle('bubble-active');
+                activeBubble = bubble.classList.contains('bubble-active') ? bubble : null;
+                return;
+            }
+
+            // Close popups and deactivate bubbles when clicking outside
+            // (but not during tutorial step 2 — tutorial manages state itself)
+            if (!altBtn && !altPopupEl?.contains(e.target) && !transPopupEl?.contains(e.target)) {
+                if (activeBubble && !(isTutorialActive && obTutorialStep >= 2)) {
+                    activeBubble.classList.remove('bubble-active');
+                    activeBubble = null;
+                }
+            }
+            if (altPopupEl && !altPopupEl.contains(e.target) && !altBtn) {
+                altPopupEl.classList.add('hidden');
+            }
+            if (transPopupEl && !transPopupEl.contains(e.target) && !altBtn) {
+                transPopupEl.classList.add('hidden');
+            }
+        });
+
+        // ===== PREMIUM SPOTLIGHT TUTORIAL SYSTEM =====
+        let isTutorialActive = false;
+        let obTutorialStep = 0;
+
+        // -- Inject keyframe CSS once --
+        (function() {
+            const style = document.createElement('style');
+            style.id = 'obKeyframes';
+            style.textContent = `
+                @keyframes obPulseRing {
+                    0%,100% { outline-color: #6366f1; outline-width: 3px; }
+                    50%      { outline-color: #a5b4fc; outline-width: 6px; }
+                }
+                @keyframes obIconBounce {
+                    0%,100% { transform: translateY(0) scale(1); }
+                    50%     { transform: translateY(-4px) scale(1.15); }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
+
+        // -- Helpers --
+        function obShowOverlay() {
+            const el = document.getElementById('obOverlay');
+            if (el) el.classList.remove('hidden');
+        }
+        function obHideOverlay() {
+            const el = document.getElementById('obOverlay');
+            if (el) el.classList.add('hidden');
+        }
+        function obShowGuideCard(html) {
+            const card = document.getElementById('obGuideCard');
+            const inner = document.getElementById('obGuideCardInner');
+            if (inner) inner.innerHTML = html;
+            if (card) card.classList.remove('hidden');
+        }
+        function obHideGuideCard() {
+            const card = document.getElementById('obGuideCard');
+            if (card) card.classList.add('hidden');
+        }
+        function obSpotlightEl(el) {
+            if (!el) return;
+            el.classList.add('ob-spotlight');
+            el.style.outline = '4px solid #6366f1';
+            el.style.outlineOffset = '5px';
+            el.style.borderRadius = '1rem';
+            el.style.animation = 'obPulseRing 1.4s ease-in-out infinite';
+        }
+        function obUnspotlightEl(el) {
+            if (!el) return;
+            el.classList.remove('ob-spotlight');
+            el.style.outline = '';
+            el.style.outlineOffset = '';
+            el.style.borderRadius = '';
+            el.style.animation = '';
+        }
+        function obElevateActionBtns(bubble) {
+            const actionsDiv = bubble && bubble.querySelector('.absolute.flex-row-reverse');
+            if (!actionsDiv) return;
+            actionsDiv.classList.add('ob-elevated-actions');
+            actionsDiv.querySelectorAll('.alt-btn').forEach((btn, i) => {
+                btn.style.animation = `obIconBounce 0.9s ease-in-out ${i * 0.2}s infinite`;
+            });
+        }
+        function obDeElevateActionBtns(bubble) {
+            const actionsDiv = bubble && bubble.querySelector('.absolute.flex-row-reverse');
+            if (!actionsDiv) return;
+            actionsDiv.classList.remove('ob-elevated-actions');
+            actionsDiv.querySelectorAll('.alt-btn').forEach(btn => { btn.style.animation = ''; });
+        }
+
+        // -- Guide card HTML templates --
+        function obStep1Html() {
+            return `
+            <div class="absolute top-3 right-3 z-10">
+                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-3 mb-3 pr-8">
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-lg">👆</span>
+                <div class="flex-1">
+                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Langkah 1 — Ketuk Bubble AI</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Tutorial interaktif (1 dari 3)</p>
+                </div>
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                Ketuk <strong class="text-indigo-600 dark:text-indigo-400">bubble chat AI</strong> yang sedang bersinar untuk membuka fitur tersembunyi! ✨
+            </p>
+            <button onclick="simulateFirstBubbleClick()" class="mt-4 w-full bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-bold py-2.5 rounded-xl transition text-xs border border-indigo-200 dark:border-indigo-800 flex items-center justify-center gap-2">
+                Atau klik di sini untuk Lanjut <i class="fas fa-arrow-right"></i>
+            </button>`;
+        }
+        function obStep2Html() {
+            return `
+            <div class="absolute top-3 right-3 z-10">
+                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-3 mb-3 pr-8">
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-lg">🎯</span>
+                <div class="flex-1">
+                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Langkah 2 — Pilih Fitur</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Tutorial interaktif (2 dari 3)</p>
+                </div>
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+                Dua ikon fitur muncul di pojok atas bubble. Klik salah satunya!
+            </p>
+            <button onclick="simulateAltClick()" class="w-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold py-2.5 rounded-xl transition text-xs border border-purple-200 dark:border-purple-800 flex items-center justify-center gap-2">
+                Atau klik di sini untuk Lanjut <i class="fas fa-arrow-right"></i>
+            </button>`;
+        }
+        function obStep3AltHtml() {
+            return `
+            <div class="absolute top-3 right-3 z-10">
+                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-3 mb-3 pr-8">
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-lg">🔄</span>
+                <div class="flex-1">
+                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Gaya Alternatif</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Langkah 3 dari 3 — Hampir selesai!</p>
+                </div>
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-2">
+                Fitur <strong class="text-purple-600 dark:text-purple-400">🔄 Gaya Alternatif</strong> menampilkan <strong>3 versi</strong> kalimat:
+            </p>
+            <div class="space-y-1.5 mb-4">
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2">
+                    <span class="text-green-500 font-bold">🌿</span><span><strong>Natural</strong> — Percakapan sehari-hari</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2">
+                    <span class="text-blue-500 font-bold">🎓</span><span><strong>Academic</strong> — Formal / IELTS</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2">
+                    <span class="text-purple-500 font-bold">😎</span><span><strong>Casual</strong> — Santai / Slang</span>
+                </div>
+            </div>
+            <button onclick="obFinishTutorial(event)" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-3 rounded-2xl transition shadow-lg shadow-indigo-600/20 text-sm flex items-center justify-center gap-2">
+                Selesai &amp; Mulai Latihan <i class="fas fa-rocket text-xs"></i>
+            </button>`;
+        }
+        function obStep3TransHtml() {
+            return `
+            <div class="absolute top-3 right-3 z-10">
+                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-3 mb-3 pr-8">
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-lg">🌐</span>
+                <div class="flex-1">
+                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Terjemahkan</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500">Langkah 3 dari 3 — Hampir selesai!</p>
+                </div>
+            </div>
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-2">
+                Fitur <strong class="text-emerald-600 dark:text-emerald-400">🌐 Terjemahkan</strong> punya 2 mode:
+            </p>
+            <div class="space-y-1.5 mb-4">
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl px-3 py-2">
+                    <i class="fas fa-magic text-indigo-500"></i><span><strong>Smart</strong> — Terjemahkan kosakata sulit saja</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl px-3 py-2">
+                    <i class="fas fa-align-left text-emerald-500"></i><span><strong>Full</strong> — Terjemahkan seluruh kalimat</span>
+                </div>
+            </div>
+            <button onclick="obFinishTutorial(event)" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-2xl transition shadow-lg shadow-emerald-600/20 text-sm flex items-center justify-center gap-2">
+                Selesai &amp; Mulai Latihan <i class="fas fa-rocket text-xs"></i>
+            </button>`;
+        }
+
+        // -- Main tutorial functions --
+        function startTutorial() {
+            isTutorialActive = false;
+            obTutorialStep = 0;
+            ['altPopup','translatePopup','scoreCard','quickGrammarPanel'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            document.querySelectorAll('.chat-bubble').forEach(b => b.classList.remove('bubble-active'));
+            activeBubble = null;
+            const welcomeModal = document.getElementById('obWelcomeModal');
+            if (welcomeModal) welcomeModal.classList.remove('hidden');
+        }
+
+        function startInteractiveTutorial() {
+            const welcomeModal = document.getElementById('obWelcomeModal');
+            if (welcomeModal) welcomeModal.classList.add('hidden');
+
+            isTutorialActive = true;
+            obTutorialStep = 1;
+
+            const firstBubble = document.querySelector('#chatMessages > .chat-bubble');
+            if (!firstBubble) return;
+
+            // Elevate the chat box above the overlay
+            const chatBox = document.getElementById('chatBoxWrapper');
+            if (chatBox) { chatBox.style.position = 'relative'; chatBox.style.zIndex = '9991'; }
+
+            // Spotlight the first bubble
+            obSpotlightEl(firstBubble);
+
+            // Show overlay and step-1 guide card
+            obShowOverlay();
+            obShowGuideCard(obStep1Html());
+
+            // One-time click handler on first bubble
+            function onFirstBubbleClick(e) {
+                if (!isTutorialActive || obTutorialStep !== 1) return;
+                if (e.target.closest('.alt-btn')) return; // let btn handle itself
+
+                e.stopPropagation(); // Prevent document handler from immediately toggling bubble-active back off!
+
+                obTutorialStep = 2;
+                // Remove spotlight ring from bubble
+                obUnspotlightEl(firstBubble);
+
+                // Activate bubble so icons appear
+                firstBubble.classList.add('bubble-active');
+                activeBubble = firstBubble;
+
+                // Elevate & animate the action icons
+                obElevateActionBtns(firstBubble);
+                obShowGuideCard(obStep2Html());
+
+                // Remove this listener — step 2 handled by icon listeners
+                firstBubble.removeEventListener('click', onFirstBubbleClick, true);
+
+                // Attach icon-click listeners (capture phase to fire before alt-btn handler)
+                const altIconBtn   = firstBubble.querySelector('[title="Alternative Styles"]');
+                const transIconBtn = firstBubble.querySelector('[title="Terjemahkan"]');
+
+                function onAltClick(ev) {
+                    if (!isTutorialActive || obTutorialStep !== 2) return;
+                    obTutorialStep = 3;
+                    obDeElevateActionBtns(firstBubble);
+                    const altPopupEl = document.getElementById('altPopup');
+                    if (altPopupEl) altPopupEl.style.zIndex = '9995';
+                    obShowGuideCard(obStep3AltHtml());
+                    if (altIconBtn)   altIconBtn.removeEventListener('click', onAltClick,   true);
+                    if (transIconBtn) transIconBtn.removeEventListener('click', onTransClick, true);
+                }
+                function onTransClick(ev) {
+                    if (!isTutorialActive || obTutorialStep !== 2) return;
+                    obTutorialStep = 3;
+                    obDeElevateActionBtns(firstBubble);
+                    const transPopupEl = document.getElementById('translatePopup');
+                    if (transPopupEl) transPopupEl.style.zIndex = '9995';
+                    obShowGuideCard(obStep3TransHtml());
+                    if (altIconBtn)   altIconBtn.removeEventListener('click', onAltClick,   true);
+                    if (transIconBtn) transIconBtn.removeEventListener('click', onTransClick, true);
+                }
+
+                if (altIconBtn)   altIconBtn.addEventListener('click',   onAltClick,   true);
+                if (transIconBtn) transIconBtn.addEventListener('click', onTransClick, true);
+                
+                // Store global references for simulation
+                window._onAltClickFn = onAltClick;
+                window._onTransClickFn = onTransClick;
+            }
+
+            firstBubble.addEventListener('click', onFirstBubbleClick, true);
+            window._onFirstBubbleClickFn = onFirstBubbleClick;
+        }
+
+        // Functions to bypass physical clicks if they fail on mobile
+        function simulateFirstBubbleClick() {
+            const firstBubble = document.querySelector('#chatMessages > .chat-bubble');
+            if (firstBubble && window._onFirstBubbleClickFn) {
+                // Construct a mock event object
+                const mockEvent = {
+                    target: firstBubble,
+                    stopPropagation: () => {},
+                    preventDefault: () => {}
+                };
+                window._onFirstBubbleClickFn(mockEvent);
+            }
+        }
+
+        function simulateAltClick() {
+            if (window._onAltClickFn) {
+                const mockEvent = {
+                    stopPropagation: () => {},
+                    preventDefault: () => {}
+                };
+                // Pre-position altPopup centrally to ensure it shows up nicely since we bypass the button click logic
+                const altPopupEl = document.getElementById('altPopup');
+                if (altPopupEl) {
+                    altPopupEl.classList.remove('hidden');
+                    altPopupEl.style.left = '50%';
+                    altPopupEl.style.top = '40%';
+                    altPopupEl.style.transform = 'translate(-50%, -50%)';
+                }
+                window._onAltClickFn(mockEvent);
+            }
+        }
+
+        function obFinishTutorial(event) {
+            if (event) { event.stopPropagation(); event.preventDefault(); }
+
+            isTutorialActive = false;
+            obTutorialStep = 0;
+
+            // Restore chat box z-index
+            const chatBox = document.getElementById('chatBoxWrapper');
+            if (chatBox) { chatBox.style.position = ''; chatBox.style.zIndex = ''; }
+
+            // Restore popup z-indexes & hide them
+            const altPopupEl   = document.getElementById('altPopup');
+            const transPopupEl = document.getElementById('translatePopup');
+            if (altPopupEl)   { altPopupEl.style.zIndex   = ''; altPopupEl.classList.add('hidden'); }
+            if (transPopupEl) { transPopupEl.style.zIndex = ''; transPopupEl.classList.add('hidden'); }
+
+            // Clean up spotlights on all bubbles
+            document.querySelectorAll('.chat-bubble').forEach(b => {
+                obUnspotlightEl(b);
+                obDeElevateActionBtns(b);
+                b.classList.remove('bubble-active');
+            });
+            activeBubble = null;
+
+            // Hide overlay and guide card
+            obHideOverlay();
+            obHideGuideCard();
+
+            // Permanently hide the bottom hint text
+            const hintContainer = document.getElementById('tutorialHintContainer');
+            if (hintContainer) hintContainer.classList.add('hidden');
+
+            localStorage.setItem('speaknow_onboarding_done', '1');
+            showToast('Tutorial selesai! Selamat berlatih! 🎉', 'success');
+        }
+
+        function hideAllTutorialTooltips() {} // kept for compatibility
+
+        // Auto-start for first-time users
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('skipTutorial') === 'true') {
+                localStorage.setItem('speaknow_onboarding_done', '1');
+                return;
+            }
+            if (!localStorage.getItem('speaknow_onboarding_done')) {
+                setTimeout(startTutorial, 800);
+            }
+        })();
+    </script>
+</body>
+</html>

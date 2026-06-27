@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="gradBlue1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6CD3FF" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#0994FF" stop-opacity="0.02" />
+    </linearGradient>
+    <linearGradient id="gradBlue2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6CD3FF" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0994FF" stop-opacity="0.8" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#gradBlue1)" />
+  <rect x="88" y="60" width="24" height="45" rx="12" stroke="url(#gradBlue2)" stroke-width="2.5" fill="none" opacity="0.8" />
+  <path d="M76 80 V85 C76 98 86 109 100 109 C114 109 124 98 124 85 V80" stroke="url(#gradBlue2)" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+  <line x1="100" y1="109" x2="100" y2="125" stroke="url(#gradBlue2)" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+  <line x1="85" y1="125" x2="115" y2="125" stroke="url(#gradBlue2)" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+  <path d="M50 100 C55 90 60 110 65 100 C70 90 75 110 80 100" stroke="url(#gradBlue2)" stroke-width="2" stroke-linecap="round" opacity="0.3" />
+  <path d="M120 100 C125 90 130 110 135 100 C140 90 145 110 150 100" stroke="url(#gradBlue2)" stroke-width="2" stroke-linecap="round" opacity="0.3" />
+</svg>

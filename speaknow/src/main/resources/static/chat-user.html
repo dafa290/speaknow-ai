@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakNow — Chat with Learners</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: Inter, system-ui, sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.8); border-radius: 9999px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.8); }
+    </style>
+</head>
+<body class="bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-surface-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 dark:bg-surface-800/90 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm backdrop-blur-md">
+            <div>
+                <div class="inline-flex items-center gap-3 text-primary-700 dark:text-primary-300 font-semibold text-lg">
+                    <i class="fas fa-comments"></i>
+                    <span>SpeakNow Chat</span>
+                </div>
+                <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Real-time chat with friends and fellow learners.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="goHome()" class="px-4 py-2 rounded-2xl bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-100 hover:bg-surface-200 transition">Dashboard</button>
+                <button onclick="goList()" class="px-4 py-2 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition">Contact List</button>
+                <button onclick="logout()" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">Logout</button>
+            </div>
+        </header>
+
+        <main class="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
+            <section class="space-y-4">
+                <div class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-surface-500 dark:text-surface-400">Chatting with</p>
+                            <h1 id="recipientName" class="mt-2 text-2xl font-semibold">Loading...</h1>
+                        </div>
+                        <div id="connectionStatus" class="inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-300">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            Connecting...
+                        </div>
+                    </div>
+                    <div id="recipientMeta" class="mt-4 text-sm text-surface-500 dark:text-surface-400"></div>
+                </div>
+
+                <div class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                    <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100">How this chat works</h2>
+                    <p class="mt-2 text-sm text-surface-500 dark:text-surface-400">Messages are delivered instantly using WebSocket, and saved to your conversation history automatically.</p>
+                </div>
+            </section>
+
+            <section class="flex flex-col h-[70vh] rounded-3xl overflow-hidden border border-surface-200 dark:border-surface-700 shadow-sm bg-blue-50 dark:bg-surface-800">
+                <div id="messagesContainer" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-4 bg-blue-50 dark:bg-surface-900"></div>
+
+                <div class="border-t border-surface-200 dark:border-surface-700 p-4 bg-white dark:bg-surface-800">
+                    <div class="relative">
+                        <textarea id="messageInput" rows="1" placeholder="Type your message…" class="w-full resize-none rounded-3xl border border-surface-200 dark:border-surface-700 bg-surface-100 dark:bg-surface-900 px-4 py-3 pr-32 text-sm text-surface-900 dark:text-surface-100 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900"></textarea>
+                        <button id="sendButton" onclick="sendChatMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-primary-600 hover:bg-primary-700 text-white w-12 h-12 flex items-center justify-center shadow-lg shadow-primary-500/20 disabled:opacity-50" type="button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <p class="mt-3 text-xs text-surface-500 dark:text-surface-400">Press Enter to send, Shift+Enter for line break.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="fixed right-4 bottom-4 z-50 flex flex-col gap-3"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script>
+        const API_BASE_URL = '/api';
+        const queryParams = new URLSearchParams(window.location.search);
+        const recipientId = queryParams.get('userId');
+        const token = localStorage.getItem('token');
+        const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+
+        let stompClient = null;
+        let recipient = null;
+
+        function redirectToLogin() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+
+        function redirectToChatList() {
+            window.location.href = '/chat-list.html';
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const palette = {
+                info: 'bg-surface-800 text-white',
+                success: 'bg-emerald-600 text-white',
+                warning: 'bg-amber-500 text-surface-900',
+                error: 'bg-rose-600 text-white'
+            };
+            toast.className = `rounded-2xl px-4 py-3 shadow-xl ${palette[type] || palette.info}`;
+            toast.textContent = message;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            status.className = connected
+                ? 'inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
+                : 'inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200';
+            status.innerHTML = `<span class="w-2 h-2 rounded-full ${connected ? 'bg-emerald-500' : 'bg-amber-400'}"></span>${connected ? 'Connected' : 'Connecting…'}`;
+        }
+
+        function addMessageToDom(message) {
+            const container = document.getElementById('messagesContainer');
+            const isMine = Number(message.senderId) === Number(currentUser && currentUser.id);
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex ${isMine ? 'justify-end' : 'justify-start'}`;
+
+            wrapper.innerHTML = `
+                <div class="max-w-[90%] ${isMine ? 'bg-blue-600 text-white rounded-3xl rounded-br-sm' : 'bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 rounded-3xl rounded-bl-sm'} px-4 py-3 shadow-sm">
+                    <div class="flex items-center justify-between gap-3 mb-1 text-xs ${isMine ? 'text-white' : 'text-surface-500'}">
+                            <span>${isMine ? 'You' : (message.senderName || 'Friend')}</span>
+                            <span>${new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                        <p class="whitespace-pre-wrap text-sm leading-6 ${isMine ? 'text-white' : 'text-surface-900 dark:text-surface-100'}">${escapeHtml(message.content)}</p>
+                </div>
+            `;
+
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value || '';
+            return div.innerHTML;
+        }
+
+        async function loadConversation() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/chat/conversation/${recipientId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    showToast('Gagal memuat percakapan. Coba lagi.', 'error');
+                    return;
+                }
+
+                const data = await response.json();
+                recipient = data.otherUser;
+                document.getElementById('recipientName').textContent = recipient.name || recipient.username;
+                document.getElementById('recipientMeta').textContent = `Username: @${recipient.username}`;
+
+                const messages = Array.isArray(data.messages) ? data.messages.slice().reverse() : [];
+                const container = document.getElementById('messagesContainer');
+                container.innerHTML = '';
+
+                if (messages.length === 0) {
+                    container.innerHTML = '<div class="text-center text-surface-500 dark:text-surface-400">Silakan kirim pesan pertama kamu.</div>';
+                    return;
+                }
+
+                messages.forEach(addMessageToDom);
+            } catch (error) {
+                console.error(error);
+                showToast('Terjadi kesalahan pada server.', 'error');
+            }
+        }
+
+        function connectWebSocket() {
+            try {
+                const socket = new SockJS('/ws/chat');
+                stompClient = Stomp.over(socket);
+                stompClient.debug = null;
+                stompClient.connect({ Authorization: `Bearer ${token}` }, () => {
+                    updateConnectionStatus(true);
+                    stompClient.subscribe('/user/queue/messages', message => {
+                        const payload = JSON.parse(message.body);
+                        if (!payload.recipientId || !payload.senderId) {
+                            return;
+                        }
+                        const isRelevant = Number(payload.senderId) === Number(recipientId) || Number(payload.recipientId) === Number(recipientId);
+                        if (isRelevant) {
+                            addMessageToDom(payload);
+                        }
+                    });
+                }, err => {
+                    console.error('WebSocket connection error', err);
+                    updateConnectionStatus(false);
+                    showToast('Gagal tersambung ke WebSocket. Refresh halaman.', 'warning');
+                });
+            } catch (error) {
+                console.error(error);
+                updateConnectionStatus(false);
+                showToast('WebSocket tidak tersedia.', 'error');
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('messageInput');
+            const content = input.value.trim();
+            if (!content) {
+                return;
+            }
+            if (!stompClient || !stompClient.connected) {
+                showToast('Koneksi belum siap. Tunggu sebentar.', 'warning');
+                return;
+            }
+            const payload = {
+                recipientId: Number(recipientId),
+                content: content
+            };
+            stompClient.send('/app/chat.send', {}, JSON.stringify(payload));
+            input.value = '';
+            input.style.height = 'auto';
+        }
+
+        function resizeTextarea() {
+            const textarea = document.getElementById('messageInput');
+            textarea.style.height = 'auto';
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 160)}px`;
+        }
+
+        function logout() {
+            fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+            }).finally(() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+            });
+        }
+
+        function goHome() {
+            window.location.href = '/dashboard.html';
+        }
+
+        function goList() {
+            window.location.href = '/chat-list.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!token || !currentUser) {
+                redirectToLogin();
+                return;
+            }
+            if (!recipientId) {
+                redirectToChatList();
+                return;
+            }
+            updateConnectionStatus(false);
+            loadConversation();
+            connectWebSocket();
+            document.getElementById('messageInput').addEventListener('input', resizeTextarea);
+            document.getElementById('messageInput').addEventListener('keydown', event => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendChatMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

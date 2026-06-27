@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakNow AI - Voice Conversation</title>
+    <script src="/assets/js/auth-helper.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/assets/css/elevenlabs-theme.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter','system-ui','sans-serif'],
+                        serif: ['EB Garamond', 'Georgia', 'serif']
+                    },
+                    colors: {
+                        primary: {
+                            50: '#fafafa', 100: '#f5f5f5', 200: '#e7e5e4', 300: '#d6d3d1',
+                            400: '#a8a29e', 500: '#78716c', 600: '#292524', 700: '#1c1917',
+                            800: '#0c0a09', 900: '#0c0a09'
+                        },
+                        surface: {
+                            50: '#f5f5f5', 100: '#fafafa', 200: '#e7e5e4', 300: '#d6d3d1',
+                            400: '#a8a29e', 500: '#78716c', 600: '#292524', 700: '#1c1917',
+                            800: '#ffffff', 900: '#0c0a09'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce { animation: bounce 0.6s infinite; }
+        .speaking {
+            animation: pulse 0.8s infinite;
+            box-shadow: 0 0 30px rgba(41, 37, 36, 0.2), 0 0 60px rgba(41, 37, 36, 0.1);
+        }
+        .listening {
+            animation: pulse 0.5s infinite;
+            background: #e7e5e4 !important;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1) !important;
+            border: 2px solid #a8a29e;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.06); }
+        }
+        .mic-ready {
+            box-shadow: 0 0 0 4px rgba(41, 37, 36, 0.1), 0 0 20px rgba(41, 37, 36, 0.05);
+        }
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .ripple-effect::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: rgba(168, 162, 158, 0.4);
+            animation: ripple 1.2s ease-out infinite;
+            pointer-events: none;
+        }
+        .mic-btn-big {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.2s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .mic-btn-big:active { transform: scale(0.93); }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    </style>
+</head>
+<body class="bg-surface-50 text-surface-600 font-sans antialiased min-h-screen relative">
+
+    <!-- ElevenLabs Ambient Background Orbs -->
+    <div class="orb-container">
+        <div class="orb orb-mint"></div>
+        <div class="orb orb-peach"></div>
+        <div class="orb orb-lavender"></div>
+        <div class="orb orb-sky"></div>
+    </div>
+
+    <div class="container mx-auto px-6 py-8 max-w-2xl relative z-10">
+
+        <!-- Header Nav -->
+        <div class="flex justify-between items-center mb-8">
+            <a href="index.html" class="flex items-center gap-2 text-surface-500 hover:text-surface-900 text-sm font-medium transition-colors">
+                <i class="fas fa-arrow-left text-xs"></i> <span class="hidden sm:inline">Back to Dashboard</span>
+            </a>
+            <div class="bg-primary-600 text-white px-5 py-2 rounded-full shadow-sm text-sm font-medium flex items-center gap-2">
+                <i class="fas fa-microphone-alt mr-1"></i>Voice Room
+            </div>
+        </div>
+
+        <!-- Main Voice Card -->
+        <div class="elevenlabs-card bg-white border border-surface-200 rounded-2xl p-8 mb-6 shadow-sm text-center">
+
+            <!-- AI Avatar -->
+            <div id="aiAvatar" class="w-28 h-28 sm:w-36 sm:h-36 bg-surface-100 border border-surface-200 rounded-full flex items-center justify-center text-primary-600 text-5xl mx-auto mb-5 transition-all duration-300 shadow-sm">
+                <i class="fas fa-robot"></i>
+            </div>
+
+            <!-- Status Badge -->
+            <div id="aiStatus" class="mb-4">
+                <span class="status-badge bg-surface-100 text-surface-600 border border-surface-200">
+                    <span class="w-2 h-2 rounded-full bg-surface-400 inline-block"></span>
+                    Siap ngobrol...
+                </span>
+            </div>
+
+            <!-- Current Message Box -->
+            <div id="currentMessage" class="text-base sm:text-lg text-surface-900 font-serif font-light mb-6 px-4 py-6 bg-surface-50 rounded-xl border border-surface-200 min-h-[80px] flex items-center justify-center leading-relaxed">
+                Tekan <strong class="text-primary-600 font-bold mx-1">Mulai</strong> untuk memulai percakapan
+            </div>
+
+            <!-- Browser Warning -->
+            <div id="browserWarning" class="hidden mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                Untuk pengalaman terbaik, gunakan <strong>Chrome di Android</strong> atau <strong>Safari di iPhone</strong>.
+            </div>
+
+            <!-- Start / Stop Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-3 mb-4">
+                <button id="startVoiceBtn" onclick="startConversation()"
+                    class="bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-8 py-3 rounded-full text-sm font-medium transition-all shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <i class="fas fa-play"></i> Mulai Percakapan
+                </button>
+                <button id="stopVoiceBtn" onclick="stopConversation()"
+                    class="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-8 py-3 rounded-full text-sm font-medium transition-all shadow-sm hidden flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <i class="fas fa-stop"></i> Akhiri Sesi
+                </button>
+            </div>
+
+            <!-- Big Mic Button (after start) -->
+            <div id="micArea" class="hidden flex-col items-center gap-3 mt-2">
+                <button id="micBigBtn" onclick="toggleListening()" class="mic-btn-big bg-primary-600 hover:bg-primary-700 active:bg-primary-800 transition-colors">
+                    <i class="fas fa-microphone text-white"></i>
+                </button>
+                <p class="text-surface-400 text-sm font-medium" id="micLabel">Tap untuk bicara</p>
+            </div>
+
+            <div id="micInstruction" class="hidden mt-3 text-sm text-surface-400">
+                <i class="fas fa-info-circle mr-1 text-primary-400"></i>
+                Tap tombol mic di atas saat giliran kamu bicara
+            </div>
+        </div>
+
+        <!-- Conversation Log -->
+        <div class="elevenlabs-card bg-white border border-surface-200 rounded-2xl p-6 shadow-sm">
+            <h3 class="font-serif font-light text-xl text-surface-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-history text-sm text-surface-400"></i> Log Percakapan
+            </h3>
+            <div id="conversationLog" class="h-64 overflow-y-auto space-y-3 pr-1">
+                <div class="text-center text-surface-400 py-8">
+                    <i class="fas fa-comments text-3xl mb-2 block opacity-30"></i>
+                    <p class="text-sm">Mulai percakapan untuk melihat transkrip</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== STATE =====
+        let mediaRecognition = null;
+        let isListening       = false;
+        let conversationActive = false;
+        let isAIPreparing     = false;
+        let audioUnlocked     = false;
+        let synthWatchdog     = null;
+
+        const userId = localStorage.getItem('userId') || '1';
+        let sessionId = 'voice-session-' + Date.now();
+
+        // ===== DOM =====
+        const aiAvatar   = document.getElementById('aiAvatar');
+        const aiStatus   = document.getElementById('aiStatus');
+        const currentMsg = document.getElementById('currentMessage');
+        const startBtn   = document.getElementById('startVoiceBtn');
+        const stopBtn    = document.getElementById('stopVoiceBtn');
+        const convLog    = document.getElementById('conversationLog');
+        const micArea    = document.getElementById('micArea');
+        const micBigBtn  = document.getElementById('micBigBtn');
+        const micLabel   = document.getElementById('micLabel');
+        const micInstruct= document.getElementById('micInstruction');
+        const browserWarn= document.getElementById('browserWarning');
+
+        // ===== BROWSER DETECTION =====
+        const hasSpeechRecognition = ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
+        const hasSpeechSynthesis   = ('speechSynthesis' in window);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+
+        if (!hasSpeechRecognition) browserWarn.classList.remove('hidden');
+
+        // ===== AUDIO UNLOCK (MUST be inside synchronous user gesture) =====
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            if (hasSpeechSynthesis) {
+                try {
+                    const silent = new SpeechSynthesisUtterance('');
+                    silent.volume = 0; silent.rate = 10;
+                    window.speechSynthesis.speak(silent);
+                } catch(e) {}
+            }
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                    const ctx = new AudioCtx();
+                    const buf = ctx.createBuffer(1, 1, 22050);
+                    const src = ctx.createBufferSource();
+                    src.buffer = buf;
+                    src.connect(ctx.destination);
+                    src.start(0);
+                    setTimeout(() => { try { ctx.close(); } catch(e) {} }, 1000);
+                }
+            } catch(e) {}
+            audioUnlocked = true;
+        }
+
+        // ===== INIT SPEECH RECOGNITION =====
+        function initSpeechRecognition() {
+            if (!hasSpeechRecognition) return false;
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            mediaRecognition = new SR();
+            mediaRecognition.lang            = 'en-US';
+            mediaRecognition.continuous      = isIOS ? false : true;
+            mediaRecognition.interimResults  = true;
+            mediaRecognition.maxAlternatives = 1;
+
+            let speechBuffer = '';
+            let silenceTimer = null;
+
+            mediaRecognition.onstart = () => {
+                isListening  = true;
+                speechBuffer = '';
+                setMicState('listening');
+                if (silenceTimer) clearTimeout(silenceTimer);
+            };
+
+            mediaRecognition.onresult = (event) => {
+                let interim = '', final = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const t = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) final += t + ' ';
+                    else interim += t;
+                }
+
+                if (interim) {
+                    currentMsg.textContent = '🎤 ' + interim + '…';
+                }
+                if (final) {
+                    speechBuffer += final;
+                    currentMsg.textContent = '📝 ' + speechBuffer.trim();
+                }
+
+                if (silenceTimer) clearTimeout(silenceTimer);
+                silenceTimer = setTimeout(() => {
+                    const txt = speechBuffer.trim();
+                    if (txt.length > 0 && conversationActive && !isAIPreparing) {
+                        speechBuffer = '';
+                        stopListening();
+                        addToLog('user', txt);
+                        currentMsg.textContent = 'You: ' + txt;
+                        sendToAI(txt);
+                    }
+                }, 4000);
+            };
+
+            mediaRecognition.onend = () => {
+                if (silenceTimer) clearTimeout(silenceTimer);
+                isListening = false;
+
+                const txt = speechBuffer.trim();
+                if (conversationActive && !isAIPreparing) {
+                    if (txt.length > 0) {
+                        speechBuffer = '';
+                        addToLog('user', txt);
+                        currentMsg.textContent = 'You: ' + txt;
+                        sendToAI(txt);
+                    } else {
+                        setMicState('ready');
+                    }
+                } else {
+                    setMicState('ready');
+                }
+            };
+
+            mediaRecognition.onerror = (event) => {
+                if (silenceTimer) clearTimeout(silenceTimer);
+                isListening = false;
+                if (event.error === 'not-allowed') {
+                    currentMsg.textContent = '❌ Microphone access denied.';
+                    updateStatus('❌ Allow microphone access in browser settings', 'error');
+                } else if (event.error !== 'aborted' && event.error !== 'no-speech') {
+                    updateStatus('⚠️ ' + event.error + ' — tap mic to try again', 'warning');
+                    setMicState('ready');
+                } else {
+                    setMicState('ready');
+                }
+            };
+            return true;
+        }
+
+        // ===== STATUS UI =====
+        const statusColors = {
+            speaking:  'bg-primary-100 text-primary-800 border border-primary-200',
+            listening: 'bg-red-50 text-red-600 border border-red-200',
+            ready:     'bg-emerald-50 text-emerald-600 border border-emerald-200',
+            thinking:  'bg-amber-50 text-amber-600 border border-amber-200',
+            warning:   'bg-amber-100 text-amber-700 border border-amber-300',
+            error:     'bg-red-100 text-red-700 border border-red-300',
+            idle:      'bg-surface-100 text-surface-600 border border-surface-200',
+        };
+        const statusDots = {
+            speaking:  'bg-primary-500',
+            listening: 'bg-red-500',
+            ready:     'bg-emerald-500',
+            thinking:  'bg-amber-500',
+            warning:   'bg-amber-500',
+            error:     'bg-red-600',
+            idle:      'bg-surface-400',
+        };
+
+        function updateStatus(text, state = 'idle') {
+            const c = statusColors[state] || statusColors.idle;
+            const d = statusDots[state]   || statusDots.idle;
+            aiStatus.innerHTML = `<span class="status-badge ${c}"><span class="w-2 h-2 rounded-full ${d} inline-block animate-pulse"></span>${text}</span>`;
+
+            aiAvatar.classList.remove('speaking', 'listening', 'mic-ready');
+            if (state === 'speaking')  aiAvatar.classList.add('speaking');
+            if (state === 'listening') aiAvatar.classList.add('listening');
+            if (state === 'ready')     aiAvatar.classList.add('mic-ready');
+        }
+
+        function setMicState(state) {
+            if (state === 'listening') {
+                micBigBtn.style.background = '#e7e5e4';
+                micBigBtn.innerHTML = '<i class="fas fa-microphone-slash text-surface-600"></i>';
+                micBigBtn.classList.add('ripple-effect');
+                micLabel.textContent = 'Mendengarkan... tap untuk berhenti';
+                updateStatus('🎤 Sedang mendengarkan...', 'listening');
+            } else {
+                micBigBtn.style.background = '#292524';
+                micBigBtn.innerHTML = '<i class="fas fa-microphone text-white"></i>';
+                micBigBtn.classList.remove('ripple-effect');
+                micLabel.textContent = 'Tap untuk bicara';
+                updateStatus('👆 Giliran kamu! Tap mic untuk bicara', 'ready');
+            }
+        }
+
+        function stopListening() {
+            if (mediaRecognition && isListening) {
+                try { mediaRecognition.stop(); } catch(e) {}
+            }
+            isListening = false;
+        }
+
+        // ===== SEND TO AI =====
+        async function sendToAI(userMessage) {
+            if (!conversationActive) return;
+            isAIPreparing = true;
+            updateStatus('🤖 AI sedang berpikir...', 'thinking');
+            currentMsg.textContent = '🤖 Berpikir...';
+
+            try {
+                const ctrl    = new AbortController();
+                const timeout = setTimeout(() => ctrl.abort(), 20000);
+
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: ctrl.signal,
+                    body: JSON.stringify({
+                        userId: parseInt(userId),
+                        sessionId,
+                        message: userMessage,
+                        mode: 'practice'
+                    })
+                });
+                clearTimeout(timeout);
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data  = await res.json();
+                const aiMsg = data.message || "Sorry, I didn't understand that.";
+
+                addToLog('ai', aiMsg);
+                currentMsg.textContent = '🤖 ' + aiMsg;
+                speakResponse(aiMsg);
+
+            } catch(err) {
+                const msg = err.name === 'AbortError'
+                    ? 'AI terlalu lama. Coba lagi.'
+                    : 'Koneksi error. Coba lagi.';
+                currentMsg.textContent = '❌ ' + msg;
+                updateStatus('❌ ' + msg, 'error');
+                setTimeout(() => { if (conversationActive) setMicState('ready'); }, 3000);
+            } finally {
+                isAIPreparing = false;
+            }
+        }
+
+        // ===== SPEAK RESPONSE =====
+        function speakResponse(text) {
+            if (!hasSpeechSynthesis) {
+                setMicState('ready');
+                micInstruct.classList.remove('hidden');
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            if (synthWatchdog) clearInterval(synthWatchdog);
+
+            updateStatus('🔊 AI sedang berbicara...', 'speaking');
+
+            function doSpeak() {
+                const utt = new SpeechSynthesisUtterance(text);
+                utt.lang   = 'en-US';
+                utt.rate   = 0.92;
+                utt.pitch  = 1;
+                utt.volume = 1;
+
+                const voices   = window.speechSynthesis.getVoices();
+                const enVoice  = voices.find(v => v.lang === 'en-US' && !v.localService)
+                              || voices.find(v => v.lang.startsWith('en-'));
+                if (enVoice) utt.voice = enVoice;
+
+                utt.onstart = () => {
+                    synthWatchdog = setInterval(() => {
+                        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+                    }, 4000);
+                };
+
+                utt.onend = () => {
+                    if (synthWatchdog) clearInterval(synthWatchdog);
+                    if (conversationActive) {
+                        setMicState('ready');
+                        currentMsg.textContent = '🎤 Siap mendengarkanmu...';
+                        micInstruct.classList.remove('hidden');
+                    }
+                };
+
+                utt.onerror = (ev) => {
+                    if (synthWatchdog) clearInterval(synthWatchdog);
+                    if (conversationActive && ev.error !== 'interrupted') setMicState('ready');
+                };
+
+                window.speechSynthesis.speak(utt);
+            }
+
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.addEventListener('voiceschanged', doSpeak, { once: true });
+                setTimeout(doSpeak, 600);
+            } else {
+                doSpeak();
+            }
+        }
+
+        // ===== START =====
+        function startConversation() {
+            unlockAudio();
+
+            if (!mediaRecognition && !initSpeechRecognition()) {
+                alert('Speech recognition tidak didukung. Gunakan Chrome atau Edge.');
+                return;
+            }
+
+            conversationActive = true;
+            sessionId = 'voice-session-' + Date.now();
+
+            startBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
+            micArea.classList.remove('hidden');
+            micArea.classList.add('flex');
+            micInstruct.classList.remove('hidden');
+            convLog.innerHTML = '';
+
+            const greeting = "Hello! I'm your AI voice partner. I'm really excited to practice English with you today. What would you like to talk about?";
+            addToLog('system', '🎙️ Sesi voice dimulai!');
+            addToLog('ai', greeting);
+            currentMsg.textContent = '🤖 ' + greeting;
+
+            setTimeout(() => speakResponse(greeting), 250);
+        }
+
+        // ===== STOP =====
+        function stopConversation() {
+            conversationActive = false;
+            isAIPreparing      = false;
+
+            stopListening();
+            window.speechSynthesis.cancel();
+            if (synthWatchdog) clearInterval(synthWatchdog);
+
+            aiAvatar.classList.remove('speaking', 'listening', 'mic-ready');
+            startBtn.classList.remove('hidden');
+            stopBtn.classList.add('hidden');
+            micArea.classList.add('hidden');
+            micArea.classList.remove('flex');
+            micInstruct.classList.add('hidden');
+
+            updateStatus('Sesi selesai. Tap Mulai untuk mulai lagi.', 'idle');
+            currentMsg.textContent = 'Sesi berakhir';
+            addToLog('system', '🔴 Percakapan selesai');
+        }
+
+        // ===== TOGGLE LISTENING =====
+        function toggleListening() {
+            if (!conversationActive) { alert('Mulai percakapan dulu!'); return; }
+            if (isAIPreparing) return;
+
+            if (isListening) {
+                stopListening();
+            } else {
+                if (isIOS) initSpeechRecognition();
+                try {
+                    mediaRecognition.start();
+                } catch(e) {
+                    initSpeechRecognition();
+                    setTimeout(() => { try { mediaRecognition.start(); } catch(e2) {} }, 300);
+                }
+            }
+        }
+
+        // ===== LOG =====
+        function addToLog(role, text) {
+            const placeholder = convLog.querySelector('.text-center');
+            if (placeholder) placeholder.remove();
+
+            const d = document.createElement('div');
+            if (role === 'user') {
+                d.className = 'flex justify-end';
+                d.innerHTML = `<div class="bg-primary-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%] shadow-sm text-sm leading-relaxed">${escapeHtml(text)}</div>`;
+            } else if (role === 'ai') {
+                d.className = 'flex justify-start';
+                d.innerHTML = `<div class="bg-surface-50 border border-surface-200 text-surface-900 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] shadow-sm text-sm leading-relaxed font-serif font-light">${escapeHtml(text)}</div>`;
+            } else {
+                d.className = 'text-center my-2';
+                d.innerHTML = `<p class="text-xs text-surface-400 font-medium uppercase tracking-wider">${text}</p>`;
+            }
+            convLog.appendChild(d);
+            convLog.scrollTop = convLog.scrollHeight;
+        }
+
+        function escapeHtml(t) {
+            const d = document.createElement('div');
+            d.textContent = t;
+            return d.innerHTML;
+        }
+
+        if (hasSpeechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.addEventListener('voiceschanged', () => window.speechSynthesis.getVoices());
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isListening) stopListening();
+        });
+    </script>
+</body>
+</html>

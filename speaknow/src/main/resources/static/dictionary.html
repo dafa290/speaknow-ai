@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakNow AI - Kamus Pintar</title>
+    <script src="/assets/js/auth-helper.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/elevenlabs-theme.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter','system-ui','sans-serif'],
+                        serif: ['EB Garamond', 'Georgia', 'serif']
+                    },
+                    colors: {
+                        gray: {
+                            50: '#f5f5f5',
+                            100: '#fafafa',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#292524',
+                            700: '#1c1917',
+                            800: '#0c0a09',
+                            900: '#0c0a09'
+                        },
+                        slate: {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#292524',
+                            700: '#1c1917',
+                            800: '#0c0a09',
+                            900: '#0c0a09'
+                        },
+                        blue: {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e7e5e4',
+                            300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
+                            600: '#292524',
+                            700: '#1c1917',
+                            800: '#0c0a09',
+                            900: '#0c0a09'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-300 relative">
+
+    <!-- ElevenLabs Ambient Background Orbs -->
+    <div class="orb-container">
+        <div class="orb orb-mint"></div>
+        <div class="orb orb-peach"></div>
+        <div class="orb orb-lavender"></div>
+        <div class="orb orb-sky"></div>
+    </div>
+
+    <div class="container mx-auto px-6 py-8 max-w-5xl relative z-10">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-book-open text-3xl text-gray-600 dark:text-gray-400"></i>
+                <h1 class="text-3xl font-serif font-light text-gray-800 dark:text-white tracking-tight">Kamus Pintar</h1>
+                <span class="bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">📖 Kamus Personal</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="themeToggle" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-2 rounded-full shadow-sm hover:shadow-md transition w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-moon text-gray-600 dark:text-gray-400"></i>
+                </button>
+                <a href="login.html" class="bg-[#292524] text-white px-4 py-2.5 rounded-full shadow-sm hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 transition flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-sign-in-alt text-xs"></i> Login
+                </a>
+                <a href="index.html" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2.5 rounded-full shadow-sm hover:shadow-md transition flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-arrow-left text-xs"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
+                <i class="fas fa-book text-gray-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="totalWords">0</p>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Total Kosakata</p>
+            </div>
+            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
+                <i class="fas fa-check-circle text-gray-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="masteredCount">0</p>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Dikuasai</p>
+            </div>
+            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
+                <i class="fas fa-hourglass-half text-gray-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="learningCount">0</p>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Dipelajari</p>
+            </div>
+            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
+                <i class="fas fa-bullseye text-gray-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="targetCount">0</p>
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Target Baru</p>
+            </div>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-4 mb-6 shadow-sm">
+            <div class="flex flex-wrap gap-3">
+                <div class="flex-1 min-w-[200px]">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchInput" placeholder="Cari kata..." 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm">
+                    </div>
+                </div>
+                <select id="categoryFilter" class="px-4 py-2 border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white rounded-full text-sm">
+                    <option value="all">📚 Semua Kategori</option>
+                    <option value="noun">Kata Benda</option>
+                    <option value="verb">Kata Kerja</option>
+                    <option value="adjective">Kata Sifat</option>
+                    <option value="adverb">Kata Keterangan</option>
+                    <option value="phrase">Frase</option>
+                </select>
+                <select id="statusFilter" class="px-4 py-2 border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white rounded-full text-sm">
+                    <option value="all">📋 Semua Status</option>
+                    <option value="mastered">✅ Dikuasai</option>
+                    <option value="learning">🟡 Sedang Dipelajari</option>
+                    <option value="target">🎯 Target Belajar</option>
+                </select>
+                <button id="resetBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full transition text-sm font-medium">
+                    <i class="fas fa-undo-alt text-xs mr-1"></i> Reset
+                </button>
+                <button id="refreshBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full transition text-sm font-medium">
+                    <i class="fas fa-sync-alt text-xs mr-1"></i> Refresh
+                </button>
+                <button id="generateTargetsBtn" class="px-5 py-2 bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white rounded-full transition text-sm font-medium shadow-sm flex items-center gap-2">
+                    <i class="fas fa-magic text-xs"></i> Generate Target dari AI
+                </button>
+            </div>
+        </div>
+
+        <!-- Dictionary List -->
+        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden mb-6 shadow-sm">
+            <div id="dictionaryList" class="flex flex-col">
+                <div class="text-center py-16 text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-gray-400"></i>
+                    <p class="font-medium text-slate-500">Memuat kamus...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <i class="fas fa-search text-5xl text-gray-300 dark:text-gray-700 mb-4"></i>
+            <p class="text-gray-500 font-serif font-light text-xl">Belum ada kata dalam kamus</p>
+            <p class="text-gray-400 text-sm mt-1">Mulai bicara dengan AI untuk mengumpulkan kosakata</p>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="paginationContainer" class="flex justify-center items-center gap-2 mt-6 mb-8 hidden">
+        </div>
+    </div>
+
+    <!-- Word Detail Modal -->
+    <div id="wordModal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-gray-900 rounded-3xl max-w-md w-full border border-gray-200 dark:border-gray-800 shadow-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800">
+                <h3 class="text-2xl font-serif font-light text-gray-800 dark:text-white" id="modalWord"></h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-white w-8 h-8 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4">
+                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Arti</span>
+                    <p id="modalMeaning" class="text-gray-800 dark:text-gray-200 mt-1 font-medium"></p>
+                </div>
+                <div class="mb-4">
+                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Contoh</span>
+                    <p id="modalExample" class="text-gray-600 dark:text-gray-400 italic mt-1 leading-relaxed"></p>
+                </div>
+                <div class="mb-4">
+                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Kategori</span>
+                    <p id="modalCategory" class="text-gray-800 dark:text-gray-300 mt-1 font-bold"></p>
+                </div>
+                <div class="flex gap-2 mt-6">
+                    <button id="markMasteredBtn" class="flex-1 bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white py-3 rounded-full transition font-semibold text-sm">
+                        <i class="fas fa-check mr-2"></i> Tandai Dikuasai
+                    </button>
+                    <button onclick="closeModal()" class="flex-1 bg-gray-100 hover:bg-gray-250 dark:bg-gray-800 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 py-3 rounded-full transition font-semibold text-sm">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const savedUser = localStorage.getItem('user');
+        const currentUser = savedUser ? JSON.parse(savedUser) : null;
+        const userId = currentUser?.id || localStorage.getItem('userId') || '1';
+        let dictionaryData = [];
+        let currentCategory = 'all';
+        let currentStatus = 'all';
+        let currentSearch = '';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // Load data
+        async function loadDictionary() {
+            try {
+                const response = await fetch(`/api/dictionary/${userId}`);
+                if (!response.ok) throw new Error('Failed to load');
+                const data = await response.json();
+                dictionaryData = data.words || [];
+                updateStats(data);
+                renderList();
+            } catch (error) {
+                console.error('Error:', error);
+                dictionaryData = [];
+                renderList();
+            }
+        }
+
+        function updateStats(data) {
+            const total = data.totalCount || 0;
+            const mastered = data.masteredCount || 0;
+            
+            let learning = 0;
+            let target = 0;
+            
+            dictionaryData.forEach(w => {
+                if (!w.mastered) {
+                    if (w.usageCount === 0) target++;
+                    else learning++;
+                }
+            });
+            
+            document.getElementById('totalWords').innerText = total;
+            document.getElementById('masteredCount').innerText = mastered;
+            document.getElementById('learningCount').innerText = learning;
+            document.getElementById('targetCount').innerText = target;
+        }
+
+        function renderList() {
+            let filtered = [...dictionaryData];
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(w => w.category === currentCategory);
+            }
+            if (currentStatus === 'mastered') {
+                filtered = filtered.filter(w => w.mastered);
+            } else if (currentStatus === 'learning') {
+                filtered = filtered.filter(w => !w.mastered && w.usageCount > 0);
+            } else if (currentStatus === 'target') {
+                filtered = filtered.filter(w => !w.mastered && w.usageCount === 0);
+            }
+            if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
+                filtered = filtered.filter(w => 
+                    w.word.toLowerCase().includes(searchLower) || 
+                    (w.meaning && w.meaning.toLowerCase().includes(searchLower))
+                );
+            }
+            
+            // Sort: Target words first, then alphabetical
+            filtered.sort((a, b) => {
+                const aIsTarget = !a.mastered && a.usageCount === 0;
+                const bIsTarget = !b.mastered && b.usageCount === 0;
+                
+                if (aIsTarget && !bIsTarget) return -1;
+                if (!aIsTarget && bIsTarget) return 1;
+                
+                return a.word.localeCompare(b.word);
+            });
+            
+            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedItems = filtered.slice(startIndex, endIndex);
+            
+            const container = document.getElementById('dictionaryList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (paginatedItems.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                renderPagination(0);
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            // Group by Target or first letter
+            const grouped = {};
+            paginatedItems.forEach(word => {
+                let groupKey = '';
+                if (!word.mastered && word.usageCount === 0) {
+                    groupKey = '🎯 Target Belajar';
+                } else {
+                    groupKey = word.word.charAt(0).toUpperCase();
+                }
+                
+                if (!grouped[groupKey]) grouped[groupKey] = [];
+                grouped[groupKey].push(word);
+            });
+            
+            const sortedLetters = Object.keys(grouped).sort((a, b) => {
+                if (a === '🎯 Target Belajar') return -1;
+                if (b === '🎯 Target Belajar') return 1;
+                return a.localeCompare(b);
+            });
+            
+            let html = '';
+            for (const letter of sortedLetters) {
+                const headerColor = letter === '🎯 Target Belajar' ? 'text-purple-600 bg-purple-50 border-purple-100' : 'text-blue-600 bg-slate-50 border-slate-100';
+                const headerIcon = letter === '🎯 Target Belajar' ? 'fa-bullseye' : 'fa-bookmark';
+                
+                html += `<div class="px-6 py-2 border-b border-t first:border-t-0 font-bold text-sm uppercase tracking-wider flex items-center gap-2 ${headerColor}"><i class="fas ${headerIcon}"></i>${letter}</div>`;
+                
+                for (const word of grouped[letter]) {
+                    let statusBadge = '';
+                    if (word.mastered) {
+                        statusBadge = '<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center gap-1"><i class="fas fa-check-circle"></i>Dikuasai</span>';
+                    } else if (word.usageCount === 0) {
+                        statusBadge = '<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200 flex items-center gap-1"><i class="fas fa-bolt"></i>Target Baru</span>';
+                    } else {
+                        statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200 flex items-center gap-1"><i class="fas fa-fire"></i>Dipakai ${word.usageCount}x</span>`;
+                    }
+                    
+                    const categoryIcon = getCategoryIcon(word.category);
+                    
+                    html += `
+                        <div class="p-5 cursor-pointer hover:bg-slate-50 transition-colors flex flex-col md:flex-row gap-4 justify-between items-start md:items-center border-b border-slate-100 last:border-0 group" onclick="openWordModal('${word.word}')">
+                            <div class="flex-1 min-w-0 w-full">
+                                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                    <h3 class="text-lg font-bold text-slate-800">${escapeHtml(word.word)}</h3>
+                                    <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 uppercase tracking-wide">
+                                        ${categoryIcon} ${word.category || 'unknown'}
+                                    </span>
+                                    ${statusBadge}
+                                </div>
+                                <p class="text-slate-600 text-sm mb-1.5 font-medium">${escapeHtml(word.meaning || 'Belum ada arti')}</p>
+                                ${word.example ? `<p class="text-slate-400 text-sm italic truncate">"${escapeHtml(word.example)}"</p>` : ''}
+                            </div>
+                            <div class="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all hidden md:block">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            container.innerHTML = html;
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const container = document.getElementById('paginationContainer');
+            if (totalPages <= 1) {
+                container.classList.add('hidden');
+                return;
+            }
+            container.classList.remove('hidden');
+            
+            let html = '';
+            
+            // Prev button
+            const prevDisabled = currentPage === 1;
+            html += `<button onclick="changePage(${currentPage - 1})" class="px-3 py-1 rounded-md border ${prevDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-blue-600 hover:bg-blue-50'}" ${prevDisabled ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            
+            // Pages
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `<button onclick="changePage(${i})" class="px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 hover:bg-blue-50'}">${i}</button>`;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span class="px-2 text-gray-400">...</span>`;
+                }
+            }
+            
+            // Next button
+            const nextDisabled = currentPage === totalPages;
+            html += `<button onclick="changePage(${currentPage + 1})" class="px-3 py-1 rounded-md border ${nextDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-blue-600 hover:bg-blue-50'}" ${nextDisabled ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            
+            container.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                noun: '📚', verb: '⚡', adjective: '🎨', adverb: '⏰', phrase: '💬'
+            };
+            return icons[category] || '📖';
+        }
+
+        async function openWordModal(word) {
+            const wordData = dictionaryData.find(w => w.word === word);
+            if (!wordData) return;
+            
+            document.getElementById('modalWord').innerText = wordData.word;
+            document.getElementById('modalMeaning').innerText = wordData.meaning || 'Belum ada definisi';
+            document.getElementById('modalExample').innerText = wordData.example ? `"${wordData.example}"` : 'Tidak ada contoh';
+            document.getElementById('modalCategory').innerHTML = `${getCategoryIcon(wordData.category)} ${wordData.category || 'unknown'}`;
+            
+            document.getElementById('wordModal').classList.remove('hidden');
+            document.getElementById('wordModal').classList.add('flex');
+            
+            document.getElementById('markMasteredBtn').onclick = () => markAsMastered(word);
+        }
+
+        async function markAsMastered(word) {
+            try {
+                const response = await fetch(`/api/dictionary/${userId}/master`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word: word })
+                });
+                if (response.ok) {
+                    closeModal();
+                    loadDictionary();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('wordModal').classList.add('hidden');
+            document.getElementById('wordModal').classList.remove('flex');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Filter handlers
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            currentPage = 1;
+            renderList();
+        });
+        document.getElementById('statusFilter').addEventListener('change', (e) => {
+            currentStatus = e.target.value;
+            currentPage = 1;
+            renderList();
+        });
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            currentPage = 1;
+            renderList();
+        });
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            currentSearch = '';
+            currentCategory = 'all';
+            currentStatus = 'all';
+            currentPage = 1;
+            renderList();
+        });
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadDictionary();
+        });
+
+        document.getElementById('generateTargetsBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('generateTargetsBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/dictionary/${userId}/generate-targets`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(`Berhasil mendapatkan ${data.addedCount} kosakata target baru dari AI! AI akan mencoba menggunakan kata-kata ini di percakapan berikutnya.`);
+                    loadDictionary();
+                }
+            } catch (error) {
+                console.error('Error generating targets:', error);
+                alert('Gagal mengambil target kosakata baru.');
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        });
+
+        // Theme toggle
+        let isDark = false;
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            isDark = !isDark;
+            if (isDark) {
+                document.body.classList.add('dark');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
+            } else {
+                document.body.classList.remove('dark');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon text-gray-600"></i>';
+            }
+        });
+
+        // Load
+        loadDictionary();
+
+        window.openWordModal = openWordModal;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

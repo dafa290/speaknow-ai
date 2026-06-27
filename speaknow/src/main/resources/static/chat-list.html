@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakNow — Contacts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: Inter, system-ui, sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.8); border-radius: 9999px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.8); }
+    </style>
+</head>
+<body class="bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-surface-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 dark:bg-surface-800/90 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm backdrop-blur-md">
+            <div>
+                <div class="inline-flex items-center gap-3 text-primary-700 dark:text-primary-300 font-semibold text-lg">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Contacts</span>
+                </div>
+                <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Browse learners and start a live chat instantly.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="goHome()" class="px-4 py-2 rounded-2xl bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-100 hover:bg-surface-200 transition">Dashboard</button>
+                <button onclick="goChat()" class="px-4 py-2 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition">New Chat</button>
+                <button onclick="logout()" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">Logout</button>
+            </div>
+        </header>
+
+        <main class="mt-6 space-y-6">
+            <section class="grid gap-6 lg:grid-cols-[1fr_320px]">
+                <div class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h1 class="text-xl font-semibold">Message Hub</h1>
+                            <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Your recent unread messages and active learners.</p>
+                        </div>
+                        <span id="unreadCount" class="rounded-full bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-200 px-3 py-1 text-xs font-semibold">0 unread</span>
+                    </div>
+                    <div id="unreadList" class="space-y-3"></div>
+                </div>
+
+                <aside class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                    <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100">Tips</h2>
+                    <ul class="mt-3 space-y-3 text-sm text-surface-500 dark:text-surface-400">
+                        <li>• Select a learner and start chatting in real time.</li>
+                        <li>• Your messages are delivered instantly with WebSocket.</li>
+                        <li>• Keep your profile online to show up in discovery.</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-lg font-semibold">Available Learners</h2>
+                    <button onclick="loadContacts()" class="text-sm font-semibold text-primary-600 hover:text-primary-700">Refresh</button>
+                </div>
+                <div id="contactsGrid" class="grid gap-4"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="fixed right-4 bottom-4 z-50 flex flex-col gap-3"></div>
+
+    <script>
+        const API_BASE_URL = '/api';
+        const token = localStorage.getItem('token');
+        const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+
+        function redirectToLogin() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            const palette = {
+                info: 'bg-surface-800 text-white',
+                success: 'bg-emerald-600 text-white',
+                warning: 'bg-amber-500 text-surface-900',
+                error: 'bg-rose-600 text-white'
+            };
+            toast.className = `rounded-2xl px-4 py-3 shadow-xl ${palette[type] || palette.info}`;
+            toast.textContent = message;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => toast.remove(), 3200);
+        }
+
+        async function loadContacts() {
+            if (!token || !currentUser) {
+                redirectToLogin();
+                return;
+            }
+
+            document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-surface-500 dark:text-surface-400">Loading contacts…</div>';
+            document.getElementById('unreadList').innerHTML = '<div class="text-sm text-surface-500 dark:text-surface-400">Checking unread messages…</div>';
+
+            try {
+                const [usersRes, unreadRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/users/discover`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE_URL}/chat/unread`, { headers: { 'Authorization': `Bearer ${token}` } })
+                ]);
+                if (!usersRes.ok) throw new Error('Failed to load users');
+                if (!unreadRes.ok) throw new Error('Failed to load unread messages');
+
+                const usersData = await usersRes.json();
+                const unreadData = await unreadRes.json();
+                const contacts = Array.isArray(usersData.users) ? usersData.users.filter(user => user.id !== currentUser.id) : [];
+                const unreadMessages = Array.isArray(unreadData.messages) ? unreadData.messages : [];
+
+                document.getElementById('unreadCount').textContent = `${unreadData.count || unreadMessages.length} unread`;
+                document.getElementById('unreadList').innerHTML = unreadMessages.length === 0
+                    ? '<div class="text-sm text-surface-500 dark:text-surface-400">Tidak ada pesan baru.</div>'
+                    : unreadMessages.map(msg => `
+                        <div class="rounded-3xl border border-surface-200 dark:border-surface-700 p-4 bg-surface-50 dark:bg-surface-900">
+                            <div class="flex items-center justify-between gap-3 text-sm text-surface-700 dark:text-surface-200">
+                                <strong>${msg.senderName}</strong>
+                                <button onclick="openChat(${msg.senderId})" class="text-primary-600 hover:text-primary-700 font-semibold">Balas</button>
+                            </div>
+                            <p class="mt-2 text-sm text-surface-500 dark:text-surface-400">${escapeHtml(msg.content)}</p>
+                        </div>
+                    `).join('');
+
+                if (contacts.length === 0) {
+                    document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-surface-500 dark:text-surface-400">Tidak ada learner lain untuk diajak chat.</div>';
+                    return;
+                }
+
+                document.getElementById('contactsGrid').innerHTML = contacts.map(user => `
+                    <div class="rounded-3xl border border-surface-200 dark:border-surface-700 p-5 bg-surface-50 dark:bg-surface-900 shadow-sm">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="font-semibold text-surface-900 dark:text-surface-100">${user.name || user.username}</p>
+                                <p class="text-sm text-surface-500 dark:text-surface-400">@${user.username}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-[11px] ${user.isOnline ? 'bg-emerald-100 text-emerald-700' : 'bg-surface-200 dark:bg-surface-700 text-surface-600'}">${user.isOnline ? 'Online' : 'Offline'}</span>
+                        </div>
+                        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                            <div class="text-xs text-surface-500 dark:text-surface-400">Level <span class="font-semibold text-surface-900 dark:text-surface-100">${user.level}</span></div>
+                            <div class="text-xs text-surface-500 dark:text-surface-400">XP <span class="font-semibold text-surface-900 dark:text-surface-100">${user.totalXp}</span></div>
+                        </div>
+                        <div class="mt-5 flex gap-3">
+                            <button onclick="openChat(${user.id})" class="flex-1 rounded-2xl bg-primary-600 text-white py-2 text-sm hover:bg-primary-700 transition">Chat</button>
+                            <button onclick="viewProfile(${user.id})" class="flex-1 rounded-2xl border border-surface-300 dark:border-surface-700 py-2 text-sm text-surface-700 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-700 transition">Profile</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error(error);
+                document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-rose-500">Gagal memuat kontak. Coba refresh.</div>';
+                document.getElementById('unreadList').innerHTML = '<div class="text-sm text-rose-500">Gagal memuat pesan.</div>';
+            }
+        }
+
+        function openChat(userId) {
+            localStorage.setItem('chatUserId', userId);
+            window.location.href = `/chat-user.html?userId=${userId}`;
+        }
+
+        function viewProfile(userId) {
+            showToast('Profile page akan segera tersedia.', 'info');
+        }
+
+        function goChat() {
+            loadContacts();
+        }
+
+        function goHome() {
+            window.location.href = '/dashboard.html';
+        }
+
+        function logout() {
+            fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            }).finally(() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!token || !currentUser) {
+                redirectToLogin();
+                return;
+            }
+            loadContacts();
+        });
+    </script>
+</body>
+</html>
