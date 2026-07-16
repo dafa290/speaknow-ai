@@ -18,3 +18,10 @@ A premium AI-powered English speaking and learning assistant.
 - **Challenge Mode**: Fast-paced strict timer sessions.
 - **Smart Dictionary**: Vocabulary builder with interactive tracking.
 - **Interview Simulator**: Mock job interviews with feedback.
+
+## Running Locally
+To run the application locally, use the Maven wrapper:
+```bash
+./mvnw spring-boot:run
+```
+The application will start on `http://localhost:8080`.
