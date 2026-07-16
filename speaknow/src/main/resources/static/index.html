@@ -49,17 +49,24 @@
         .sidebar-item:hover i, .sidebar-item:hover svg { color: white; }
     </style>
 </head>
-<body class="text-surface-900 font-sans antialiased overflow-hidden relative">
-    
-    <!-- Overall Background Image -->
-    <div class="absolute inset-0 z-0">
-        <img src="images/bg-main.png" alt="Background" class="w-full h-full object-cover">
+<body class="text-surface-900 font-sans antialiased relative" style="background-image: url('/images/bg-main.svg?v=2'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;">
+
+    <!-- Decorative Left Plants (Pop-up over sidebar) -->
+    <div class="fixed top-0 left-0 h-full pointer-events-none z-50">
+        <!-- Top Plant -->
+        <img src="images/plant-1.svg" class="absolute -left-2 top-8 w-32 drop-shadow-lg transform -rotate-12" alt="Plant Decoration">
+        
+        <!-- Middle Plant -->
+        <img src="images/plant-2.svg" class="absolute -left-4 top-1/2 -translate-y-1/2 w-40 drop-shadow-xl" alt="Plant Decoration">
+        
+        <!-- Bottom Plant -->
+        <img src="images/plant-1.svg" class="absolute -left-2 bottom-8 w-32 drop-shadow-lg transform rotate-12 scale-y-[-1]" alt="Plant Decoration">
     </div>
 
     <!-- Main Dashboard Container -->
-    <div class="flex h-screen w-full relative z-10">
+    <div class="flex min-h-screen w-full relative z-10">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white/70 backdrop-blur-xl border-r border-white/30 flex flex-col h-full relative z-20">
+        <aside class="w-64 bg-white/30 backdrop-blur-md border-r border-white/20 flex flex-col h-full relative z-20">
         <!-- Logo -->
         <div class="p-6 flex items-center gap-3">
             <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md shadow-primary-200">
@@ -76,7 +83,7 @@
             <a href="dashboard.html" class="sidebar-item active flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
                 <i class="fa-solid fa-house w-5 text-center text-white"></i> Dashboard
             </a>
-            <a href="chat-list.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+            <a href="chat.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
                 <i class="fa-solid fa-comment-dots w-5 text-center text-surface-400"></i> Free Chat
             </a>
             <a href="Interview.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
@@ -136,7 +143,7 @@
     </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 h-full overflow-y-auto bg-white/40 backdrop-blur-sm relative z-10">
+        <main class="flex-1 h-full overflow-y-auto relative z-10">
         <div class="max-w-6xl mx-auto space-y-6">
             
             <!-- Header -->
@@ -206,28 +213,8 @@
                 </div>
 
                 <!-- AI Robot Banner -->
-                <div class="bg-gradient-to-br from-[#e0e7ff] to-[#f3e8ff] rounded-3xl p-8 relative overflow-hidden flex flex-col justify-center">
-                    <div class="absolute inset-0 opacity-40">
-                        <svg class="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
-                            <path fill="#ffffff" d="M0,256L48,229.3C96,203,192,149,288,154.7C384,160,480,224,576,224C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                        </svg>
-                    </div>
-                    <div class="relative z-10 flex h-full items-center">
-                        <div class="flex-1 pr-2">
-                             <div class="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-sm inline-block mb-4 border border-white">
-                                <p class="text-[11px] font-bold text-surface-800">Great job today!</p>
-                                <p class="text-[10px] text-surface-500 font-medium mt-1">Your speaking improved<br>by 12% 🚀</p>
-                             </div>
-                             <br>
-                             <div class="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-sm inline-block ml-8 border border-white">
-                                <p class="text-[11px] font-bold text-surface-800">Let's practice <br>something new? 💡</p>
-                             </div>
-                        </div>
-                        <div class="w-1/2 flex justify-end items-end h-full relative">
-                            <!-- Right side illustration (Custom Asset 2) -->
-                            <img src="images/asset2.png?v=123" alt="Illustration" class="h-44 object-contain z-10 drop-shadow-xl transform translate-y-4" onerror="this.src='https://cdn3d.iconscout.com/3d/premium/thumb/robot-8968940-7323671.png'">
-                        </div>
-                    </div>
+                <div class="rounded-3xl p-0 relative overflow-hidden flex flex-col justify-center min-h-[250px]" style="border: 1px solid #e0e7ff;">
+                    <img src="/images/asset1.png" alt="SpeakNow Banner" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; border-radius: 1.5rem;">
                 </div>
             </div>
 
@@ -421,7 +408,7 @@
                         </div>
                         <h4 class="font-bold text-sm text-surface-900 mb-1">Free Chat</h4>
                         <p class="text-[11px] text-surface-500 mb-6 leading-relaxed">Talk freely with AI and improve your fluency</p>
-                        <button onclick="window.location.href='chat-list.html'" class="w-full border border-green-500 text-green-600 font-semibold text-xs py-2 rounded-xl hover:bg-green-50 transition-colors">Start Chat</button>
+                        <button onclick="window.location.href='chat.html'" class="w-full border border-green-500 text-green-600 font-semibold text-xs py-2 rounded-xl hover:bg-green-50 transition-colors">Start Chat</button>
                     </div>
 
                     <!-- Interview -->
@@ -670,12 +657,31 @@
                             <p class="text-white font-medium text-sm leading-relaxed pr-8 mb-4">"The expert in anything was once a beginner."</p>
                             <p class="text-primary-200 text-[10px] font-medium">— Helen Hayes</p>
                         </div>
-                        <img src="images/asset1.png" class="absolute -right-4 -bottom-4 w-32 opacity-90 drop-shadow-xl" alt="Asset" onerror="this.src='https://cdn3d.iconscout.com/3d/premium/thumb/astronaut-holding-flag-on-mountain-4530008-3761763.png'">
+                        <img src="images/asset2.png" class="absolute -right-4 -bottom-4 w-32 opacity-90 drop-shadow-xl" alt="Asset" onerror="this.src='https://cdn3d.iconscout.com/3d/premium/thumb/astronaut-holding-flag-on-mountain-4530008-3761763.png'">
                     </div>
                 </div>
             </div>
 
         </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 pb-8 text-center">
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl p-8 border border-white/40 shadow-sm max-w-3xl mx-auto">
+                    <div class="flex items-center justify-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white text-sm shadow-md">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <span class="font-bold text-lg text-surface-800">SpeakNow AI</span>
+                    </div>
+                    <p class="text-surface-500 text-xs mb-4">Your AI-powered English learning companion</p>
+                    <div class="flex justify-center gap-6 text-surface-400 text-xs">
+                        <span>© 2026 SpeakNow</span>
+                        <span>•</span>
+                        <span>Made with 💜</span>
+                    </div>
+                </div>
+            </footer>
+
     </main>
 
     <!-- Script for Charts and Logic -->
