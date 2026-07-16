@@ -34,3 +34,8 @@ build/
 
 # Binary assets (not needed for cloud deployment)
 src/main/resources/static/assets/*.png
+
+# Environment and logs
+*.log
+.env
+.env.*
