@@ -10,6 +10,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Component responsible for seeding initial database data.
+ * Cleans up unused test accounts to maintain database integrity.
+ */
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
 
