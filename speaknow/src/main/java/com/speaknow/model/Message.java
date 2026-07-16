@@ -3,6 +3,10 @@ package com.speaknow.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a chat message in the application.
+ * Contains sender, recipient, content, and read status.
+ */
 @Entity
 @Table(name = "messages")
 public class Message {
