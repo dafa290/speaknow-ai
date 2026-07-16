@@ -26,6 +26,10 @@ import com.speaknow.model.WordEntry;
 import com.speaknow.repository.WordRepository;
 import com.speaknow.repository.UserRepository;
 
+/**
+ * Service for fetching and managing dictionary word definitions.
+ * Includes caching, external API integrations, and AI fallbacks.
+ */
 @Service
 public class DictionaryService {
     
