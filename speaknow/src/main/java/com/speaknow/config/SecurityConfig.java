@@ -15,6 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.speaknow.security.JwtAuthenticationFilter;
 
+/**
+ * Global Security Configuration.
+ * Configures CORS, CSRF, and HTTP request authorization rules.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
