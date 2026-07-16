@@ -494,8 +494,10 @@
             welcomeMessage = "Hello! 👋 I'm your friendly English conversation partner. What would you like to talk about today?";
         } else if (mode === 'guided') {
             welcomeMessage = "Hello! I'm your English tutor. Let's practice together. You have 60 seconds to answer each question. How was your day?";
+        } else if (mode === 'challenge') {
+            welcomeMessage = "Welcome to Challenge Mode! You have 30 seconds. Are you ready for a quick challenge?";
         } else {
-            welcomeMessage = "Welcome to the Job Interview! I'm your HR interviewer. You have 30 seconds for each question. Tell me about yourself.";
+            welcomeMessage = "Welcome! Let's start practicing.";
         }
         
         addMessage('ai', welcomeMessage);
