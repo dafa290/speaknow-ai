@@ -3,6 +3,10 @@ package com.speaknow.model;
 import jakarta.persistence.*;  // ✅ PAKAI jakarta, BUKAN javax
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a registered user in the system.
+ * Tracks user level, experience points (XP), and online status.
+ */
 @Entity
 @Table(name = "users")
 public class User {
