@@ -25,6 +25,10 @@ import com.speaknow.model.SessionRequest;
 import com.speaknow.model.SessionResponse;
 import com.speaknow.repository.ConversationHistoryRepository;
 
+/**
+ * Service for interacting with external AI providers (e.g. Groq).
+ * Handles conversational flows and pronunciation evaluations.
+ */
 @Service
 public class AIService {
 
