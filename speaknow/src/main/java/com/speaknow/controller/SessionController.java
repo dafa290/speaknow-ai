@@ -24,6 +24,10 @@ import com.speaknow.repository.SessionRepository;
 import com.speaknow.repository.UserRepository;
 import com.speaknow.service.AIService;
 
+/**
+ * REST Controller for handling user learning sessions.
+ * Manages Free Chat, Guided Mode, and Challenge Mode sessions.
+ */
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
