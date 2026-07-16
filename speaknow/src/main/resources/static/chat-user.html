@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,18 +14,18 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.8); }
     </style>
 </head>
-<body class="bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-surface-100 min-h-screen">
+<body class="bg-surface-50 text-surface-900 min-h-screen">
     <div class="max-w-6xl mx-auto px-4 py-4">
-        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 dark:bg-surface-800/90 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm backdrop-blur-md">
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 border border-surface-200 rounded-3xl p-5 shadow-sm backdrop-blur-md">
             <div>
-                <div class="inline-flex items-center gap-3 text-primary-700 dark:text-primary-300 font-semibold text-lg">
+                <div class="inline-flex items-center gap-3 text-primary-700 font-semibold text-lg">
                     <i class="fas fa-comments"></i>
                     <span>SpeakNow Chat</span>
                 </div>
-                <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Real-time chat with friends and fellow learners.</p>
+                <p class="mt-1 text-sm text-surface-500">Real-time chat with friends and fellow learners.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <button onclick="goHome()" class="px-4 py-2 rounded-2xl bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-100 hover:bg-surface-200 transition">Dashboard</button>
+                <button onclick="goHome()" class="px-4 py-2 rounded-2xl bg-surface-100 text-surface-700 hover:bg-surface-200 transition">Dashboard</button>
                 <button onclick="goList()" class="px-4 py-2 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition">Contact List</button>
                 <button onclick="logout()" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">Logout</button>
             </div>
@@ -33,37 +33,37 @@
 
         <main class="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
             <section class="space-y-4">
-                <div class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                <div class="bg-white border border-surface-200 rounded-3xl p-5 shadow-sm">
                     <div class="flex items-center justify-between gap-4">
                         <div>
-                            <p class="text-xs uppercase tracking-[0.18em] text-surface-500 dark:text-surface-400">Chatting with</p>
+                            <p class="text-xs uppercase tracking-[0.18em] text-surface-500">Chatting with</p>
                             <h1 id="recipientName" class="mt-2 text-2xl font-semibold">Loading...</h1>
                         </div>
-                        <div id="connectionStatus" class="inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-300">
+                        <div id="connectionStatus" class="inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-surface-100 text-surface-600">
                             <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                             Connecting...
                         </div>
                     </div>
-                    <div id="recipientMeta" class="mt-4 text-sm text-surface-500 dark:text-surface-400"></div>
+                    <div id="recipientMeta" class="mt-4 text-sm text-surface-500"></div>
                 </div>
 
-                <div class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
-                    <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100">How this chat works</h2>
-                    <p class="mt-2 text-sm text-surface-500 dark:text-surface-400">Messages are delivered instantly using WebSocket, and saved to your conversation history automatically.</p>
+                <div class="bg-white border border-surface-200 rounded-3xl p-5 shadow-sm">
+                    <h2 class="text-sm font-semibold text-surface-900">How this chat works</h2>
+                    <p class="mt-2 text-sm text-surface-500">Messages are delivered instantly using WebSocket, and saved to your conversation history automatically.</p>
                 </div>
             </section>
 
-            <section class="flex flex-col h-[70vh] rounded-3xl overflow-hidden border border-surface-200 dark:border-surface-700 shadow-sm bg-blue-50 dark:bg-surface-800">
-                <div id="messagesContainer" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-4 bg-blue-50 dark:bg-surface-900"></div>
+            <section class="flex flex-col h-[70vh] rounded-3xl overflow-hidden border border-surface-200 shadow-sm bg-primary-50">
+                <div id="messagesContainer" class="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-4 bg-primary-50"></div>
 
-                <div class="border-t border-surface-200 dark:border-surface-700 p-4 bg-white dark:bg-surface-800">
+                <div class="border-t border-surface-200 p-4 bg-white">
                     <div class="relative">
-                        <textarea id="messageInput" rows="1" placeholder="Type your message…" class="w-full resize-none rounded-3xl border border-surface-200 dark:border-surface-700 bg-surface-100 dark:bg-surface-900 px-4 py-3 pr-32 text-sm text-surface-900 dark:text-surface-100 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900"></textarea>
+                        <textarea id="messageInput" rows="1" placeholder="Type your message…" class="w-full resize-none rounded-3xl border border-surface-200 bg-surface-100 px-4 py-3 pr-32 text-sm text-surface-900 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200:ring-primary-900"></textarea>
                         <button id="sendButton" onclick="sendChatMessage()" class="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-primary-600 hover:bg-primary-700 text-white w-12 h-12 flex items-center justify-center shadow-lg shadow-primary-500/20 disabled:opacity-50" type="button">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
-                    <p class="mt-3 text-xs text-surface-500 dark:text-surface-400">Press Enter to send, Shift+Enter for line break.</p>
+                    <p class="mt-3 text-xs text-surface-500">Press Enter to send, Shift+Enter for line break.</p>
                 </div>
             </section>
         </main>
@@ -109,8 +109,8 @@
         function updateConnectionStatus(connected) {
             const status = document.getElementById('connectionStatus');
             status.className = connected
-                ? 'inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'
-                : 'inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200';
+                ? 'inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-emerald-100 text-emerald-700'
+                : 'inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-xs font-medium bg-amber-100 text-amber-700';
             status.innerHTML = `<span class="w-2 h-2 rounded-full ${connected ? 'bg-emerald-500' : 'bg-amber-400'}"></span>${connected ? 'Connected' : 'Connecting…'}`;
         }
 
@@ -121,12 +121,12 @@
             wrapper.className = `flex ${isMine ? 'justify-end' : 'justify-start'}`;
 
             wrapper.innerHTML = `
-                <div class="max-w-[90%] ${isMine ? 'bg-blue-600 text-white rounded-3xl rounded-br-sm' : 'bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100 rounded-3xl rounded-bl-sm'} px-4 py-3 shadow-sm">
+                <div class="max-w-[90%] ${isMine ? 'bg-primary-600 text-white rounded-3xl rounded-br-sm' : 'bg-white text-surface-900 rounded-3xl rounded-bl-sm'} px-4 py-3 shadow-sm">
                     <div class="flex items-center justify-between gap-3 mb-1 text-xs ${isMine ? 'text-white' : 'text-surface-500'}">
                             <span>${isMine ? 'You' : (message.senderName || 'Friend')}</span>
                             <span>${new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
-                        <p class="whitespace-pre-wrap text-sm leading-6 ${isMine ? 'text-white' : 'text-surface-900 dark:text-surface-100'}">${escapeHtml(message.content)}</p>
+                        <p class="whitespace-pre-wrap text-sm leading-6 ${isMine ? 'text-white' : 'text-surface-900'}">${escapeHtml(message.content)}</p>
                 </div>
             `;
 
@@ -163,7 +163,7 @@
                 container.innerHTML = '';
 
                 if (messages.length === 0) {
-                    container.innerHTML = '<div class="text-center text-surface-500 dark:text-surface-400">Silakan kirim pesan pertama kamu.</div>';
+                    container.innerHTML = '<div class="text-center text-surface-500">Silakan kirim pesan pertama kamu.</div>';
                     return;
                 }
 

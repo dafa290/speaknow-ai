@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SpeakNow AI</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f5ff', 100: '#e5edff', 200: '#cddbfe', 300: '#b4c6fc',
+                            400: '#8da2fb', 500: '#6875f5', 600: '#5850ec', 700: '#5145cd',
+                            800: '#42389d', 900: '#362f78'
+                        },
+                        surface: {
+                            50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',
+                            400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155',
+                            800: '#1e293b', 900: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for fallback icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .sidebar-item { transition: all 0.2s; }
+        .sidebar-item:hover, .sidebar-item.active { background: #5850ec; color: white; border-radius: 12px; }
+        .sidebar-item.active i, .sidebar-item.active svg { color: white; }
+        .sidebar-item:hover i, .sidebar-item:hover svg { color: white; }
+    </style>
+</head>
+<body class="text-surface-900 font-sans antialiased overflow-hidden relative">
+    
+    <!-- Overall Background Image -->
+    <div class="absolute inset-0 z-0">
+        <img src="images/bg-main.png" alt="Background" class="w-full h-full object-cover">
+    </div>
+
+    <!-- Main Dashboard Container -->
+    <div class="flex h-screen w-full relative z-10">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white/70 backdrop-blur-xl border-r border-white/30 flex flex-col h-full relative z-20">
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md shadow-primary-200">
+                <i class="fa-solid fa-comments"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">SpeakNow</h1>
+                <p class="text-[10px] text-surface-500 font-medium">AI English Assistant</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-2 space-y-1 overflow-y-auto">
+            <a href="dashboard.html" class="sidebar-item active flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-house w-5 text-center text-white"></i> Dashboard
+            </a>
+            <a href="session.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-comment-dots w-5 text-center text-surface-400"></i> Free Chat
+            </a>
+
+            <a href="voice-chat.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-microphone w-5 text-center text-surface-400"></i> Voice Chat
+            </a>
+            <a href="dictionary.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-book w-5 text-center text-surface-400"></i> Dictionary
+            </a>
+            <a href="vocabulary.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-spell-check w-5 text-center text-surface-400"></i> Vocabulary
+            </a>
+            <a href="progress.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-chart-line w-5 text-center text-surface-400"></i> Progress
+            </a>
+            <a href="settings.html" class="sidebar-item flex items-center gap-3 px-4 py-3 text-sm font-medium text-surface-600 rounded-xl mb-1">
+                <i class="fa-solid fa-gear w-5 text-center text-surface-400"></i> Settings
+            </a>
+        </nav>
+
+        <!-- Upgrade Card -->
+        <div class="px-6 py-4">
+            <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 text-center">
+                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-crown text-orange-500 text-lg"></i>
+                </div>
+                <h4 class="font-bold text-sm mb-1 text-surface-800">Unlock All Features</h4>
+                <p class="text-xs text-surface-500 mb-4 leading-relaxed">Go Premium and get unlimited access to all AI tools.</p>
+                <button class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium text-sm py-2 rounded-xl transition-colors shadow-sm shadow-primary-200">
+                    Upgrade to Pro
+                </button>
+            </div>
+        </div>
+
+        <!-- Weekly Goal -->
+        <div class="px-6 pb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-semibold text-surface-800">Weekly Goal</span>
+            </div>
+            <div class="text-[10px] text-surface-500 mb-2 font-medium">4 / 7 Days</div>
+            <div class="w-full bg-surface-100 rounded-full h-1.5">
+                <div class="bg-primary-600 h-1.5 rounded-full" style="width: 57%"></div>
+            </div>
+            
+
+        </div>
+    </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 h-full overflow-y-auto bg-white/40 backdrop-blur-sm relative z-10">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <header class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-surface-900 mb-2">My Vocabulary 📚</h2>
+                    <p class="text-surface-500 font-medium text-sm">Review the words you've learned from chats.</p>
+                </div>
+                <button class="bg-primary-600 text-white px-5 py-2.5 rounded-full shadow-sm hover:bg-primary-700 transition flex items-center gap-2 text-sm font-medium">
+                    <i class="fas fa-plus"></i> Add Word
+                </button>
+            </header>
+            
+            <div class="bg-white rounded-2xl p-6 border border-surface-100 shadow-sm">
+                <div class="flex gap-4 mb-6">
+                    <div class="relative flex-1">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-surface-400"></i>
+                        <input type="text" placeholder="Search words..." class="w-full pl-11 pr-4 py-2 border border-surface-200 rounded-xl focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 text-sm">
+                    </div>
+                    <select class="border border-surface-200 rounded-xl px-4 py-2 text-sm text-surface-700 outline-none">
+                        <option>All Status</option>
+                        <option>Learning</option>
+                        <option>Mastered</option>
+                    </select>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Word Item -->
+                    <div class="flex items-center justify-between p-4 border border-surface-100 rounded-xl hover:shadow-sm transition-shadow">
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-surface-900">Eloquent</span>
+                            <span class="text-xs text-surface-500 mt-1">Fluent or persuasive in speaking or writing.</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-[10px] font-bold uppercase">Mastered</span>
+                            <button class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center text-surface-600 hover:bg-surface-200"><i class="fas fa-volume-up text-xs"></i></button>
+                        </div>
+                    </div>
+                    <!-- Word Item -->
+                    <div class="flex items-center justify-between p-4 border border-surface-100 rounded-xl hover:shadow-sm transition-shadow">
+                        <div class="flex flex-col">
+                            <span class="text-lg font-bold text-surface-900">Resilient</span>
+                            <span class="text-xs text-surface-500 mt-1">Able to withstand or recover quickly from difficult conditions.</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-md text-[10px] font-bold uppercase">Learning</span>
+                            <button class="w-8 h-8 rounded-full bg-surface-100 flex items-center justify-center text-surface-600 hover:bg-surface-200"><i class="fas fa-volume-up text-xs"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script for Charts and Logic -->
+    <script>
+        const API_BASE_URL = window.location.origin + '/api';
+        let currentUser = null;
+
+        // Check authentication
+        window.addEventListener('load', async () => {
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
+
+            if (!token || !userData) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userData);
+            const firstName = currentUser.name ? currentUser.name.split(' ')[0] : 'User';
+            
+            // Update UI with actual data
+            document.getElementById('displayName').textContent = firstName;
+            document.getElementById('userInitial').textContent = firstName.charAt(0).toUpperCase();
+            
+            // Format numbers with comma
+            const formatNum = (num) => new Intl.NumberFormat().format(num);
+            
+            document.getElementById('totalXpHeader').textContent = formatNum(currentUser.totalXp || 0);
+            document.getElementById('statXp').textContent = formatNum(currentUser.totalXp || 0);
+            
+            const level = currentUser.level || 'Beginner';
+            document.getElementById('userLevelText').textContent = level;
+            
+            // Determine level badge
+            let levelBadge = 'A1';
+            if(level.toLowerCase().includes('intermediate')) levelBadge = 'B1';
+            if(level.toLowerCase().includes('advanced')) levelBadge = 'C1';
+            document.getElementById('userLevelBadge').textContent = levelBadge;
+            
+            document.getElementById('statSessions').textContent = currentUser.practiceCount || 0;
+
+            initCharts();
+        });
+
+        function logout() {
+            if(confirm('Are you sure you want to logout?')) {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    fetch(`${API_BASE_URL}/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }).finally(() => {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '/login.html';
+                    });
+                } else {
+                    window.location.href = '/login.html';
+                }
+            }
+        }
+
+        // Initialize Charts using Chart.js
+        function initCharts() {
+            // Radar Chart for Skill Progress
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['Speaking', 'Listening', 'Grammar', 'Vocabulary', 'Confidence'],
+                    datasets: [{
+                        label: 'Skill Level',
+                        data: [78, 65, 71, 82, 68],
+                        backgroundColor: 'rgba(88, 80, 236, 0.2)', // primary-600 with opacity
+                        borderColor: 'rgba(88, 80, 236, 1)',
+                        pointBackgroundColor: 'rgba(88, 80, 236, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(88, 80, 236, 1)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            pointLabels: {
+                                font: { family: "'Inter', sans-serif", size: 10, weight: '600' },
+                                color: '#64748b'
+                            },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    }
+                }
+            });
+
+            // Bar Chart for Vocabulary Growth
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Words Mastered',
+                        data: [15, 25, 20, 45, 10, 22, 18],
+                        backgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            // Make Thursday (index 3) the primary color, others light green
+                            return index === 3 ? '#10b981' : 'rgba(16, 185, 129, 0.3)';
+                        },
+                        borderRadius: 4,
+                        barThickness: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            titleFont: { family: "'Inter', sans-serif" },
+                            bodyFont: { family: "'Inter', sans-serif" },
+                            callbacks: {
+                                label: function(context) { return context.raw + ' words'; }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { display: false, min: 0 },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: {
+                                font: { family: "'Inter', sans-serif", size: 10, weight: '500' },
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

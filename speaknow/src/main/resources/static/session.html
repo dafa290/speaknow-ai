@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,39 +10,23 @@
     <link rel="stylesheet" href="/assets/css/elevenlabs-theme.css">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter','system-ui','sans-serif'],
-                        serif: ['EB Garamond', 'Georgia', 'serif']
-                    },
                     colors: {
-                        slate: {
-                            50: '#f5f5f5',
-                            100: '#fafafa',
-                            200: '#e7e5e4',
-                            300: '#d6d3d1',
-                            400: '#a8a29e',
-                            500: '#78716c',
-                            600: '#57534e',
-                            700: '#44403c',
-                            800: '#292524',
-                            900: '#0c0a09',
-                            950: '#000000'
+                        primary: {
+                            50: '#f0f5ff', 100: '#e5edff', 200: '#cddbfe', 300: '#b4c6fc',
+                            400: '#8da2fb', 500: '#6875f5', 600: '#5850ec', 700: '#5145cd',
+                            800: '#42389d', 900: '#362f78'
                         },
-                        indigo: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            800: '#3730a3',
-                            900: '#312e81'
+                        surface: {
+                            50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',
+                            400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155',
+                            800: '#1e293b', 900: '#0f172a'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['EB Garamond', 'Georgia', 'serif']
                     }
                 }
             }
@@ -135,7 +119,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-800 dark:text-slate-200 transition-colors duration-300 relative">
+<body class="bg-surface-50 min-h-screen text-surface-800 transition-colors duration-300 relative">
     
     <!-- ElevenLabs Ambient Background Orbs -->
     <div class="orb-container">
@@ -150,118 +134,118 @@
         <!-- Header -->
         <div class="relative z-10 flex justify-between items-center mb-8">
             <div class="flex gap-2">
-                <a href="index.html" class="flex items-center gap-3 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white font-medium transition bg-white dark:bg-slate-900 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm">
+                <a href="index.html" class="flex items-center gap-3 text-surface-600 hover:text-surface-800:text-white font-medium transition bg-white px-4 py-2.5 rounded-full border border-surface-200 shadow-sm">
                     <i class="fas fa-arrow-left text-sm"></i> <span class="hidden sm:inline text-sm">Dashboard</span>
                 </a>
-                <button onclick="localStorage.removeItem('speaknow_onboarding_done'); startTutorial();" class="flex items-center gap-2 text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white font-medium transition bg-white dark:bg-slate-900 px-4 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm" title="Ulangi Tutorial">
+                <button onclick="localStorage.removeItem('speaknow_onboarding_done'); startTutorial();" class="flex items-center gap-2 text-surface-600 hover:text-surface-800:text-white font-medium transition bg-white px-4 py-2.5 rounded-full border border-surface-200 shadow-sm" title="Ulangi Tutorial">
                     <i class="fas fa-question-circle text-sm"></i> <span class="hidden sm:inline text-sm">Tutorial</span>
                 </button>
             </div>
-            <div class="bg-white dark:bg-slate-900 px-5 py-2.5 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
+            <div class="bg-white px-5 py-2.5 rounded-full border border-surface-200 shadow-sm flex items-center gap-3">
                 <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                <span id="modeLabel" class="font-serif font-light text-sm tracking-wide text-slate-900 dark:text-white">Free Chat</span>
-                <span class="w-px h-4 bg-slate-200 dark:bg-slate-800"></span>
-                <span id="levelLabel" class="text-[10px] font-bold text-stone-500 dark:text-stone-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full uppercase tracking-wider">Intermediate</span>
+                <span id="modeLabel" class="font-serif font-light text-sm tracking-wide text-surface-900">Free Chat</span>
+                <span class="w-px h-4 bg-surface-200"></span>
+                <span id="levelLabel" class="text-[10px] font-bold text-stone-500 bg-surface-100 px-2.5 py-1 rounded-full uppercase tracking-wider">Intermediate</span>
             </div>
         </div>
         
         <!-- Timer -->
         <div id="timerContainer" class="text-center mb-4 hidden">
-            <div class="inline-block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-6 py-2 shadow-sm">
+            <div class="inline-block bg-white border border-surface-200 rounded-full px-6 py-2 shadow-sm">
                 <i class="fas fa-hourglass-half text-amber-500 mr-2"></i>
-                <span id="timer" class="text-xl font-light font-serif text-slate-900 dark:text-white">00:00</span>
+                <span id="timer" class="text-xl font-light font-serif text-surface-900">00:00</span>
             </div>
         </div>
         
         <!-- Chat Container -->
-        <div id="chatBoxWrapper" class="relative z-10 bg-white/80 dark:bg-slate-900/80 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 h-[500px] mb-6 flex flex-col overflow-hidden">
+        <div id="chatBoxWrapper" class="relative z-10 bg-white/80 rounded-3xl shadow-sm border border-surface-200 h-[500px] mb-6 flex flex-col overflow-hidden">
             <div id="chatContainer" class="flex-1 overflow-y-auto p-6 relative z-10 custom-scrollbar">
                 <div id="chatMessages" class="space-y-6"></div>
             </div>
         </div>
         
         <!-- Score Card Modal -->
-        <div id="scoreCard" class="hidden fixed inset-0 z-[9995] flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm transition-opacity">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 w-full max-w-md overflow-hidden transform transition-all relative">
-                <div class="bg-slate-100 dark:bg-slate-800 p-5 text-slate-900 dark:text-white flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
+        <div id="scoreCard" class="hidden fixed inset-0 z-[9995] flex items-center justify-center p-4 bg-surface-950/40 backdrop-blur-sm transition-opacity">
+            <div class="bg-white rounded-3xl shadow-lg border border-surface-200 w-full max-w-md overflow-hidden transform transition-all relative">
+                <div class="bg-surface-100 p-5 text-surface-900 flex justify-between items-center border-b border-surface-200">
                     <h3 class="font-serif font-light text-lg flex items-center gap-2"><i class="fas fa-magic text-sm"></i> AI Grammar Analysis</h3>
-                    <button id="closeScoreBtn" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center transition focus:outline-none">
+                    <button id="closeScoreBtn" class="w-8 h-8 rounded-full bg-white hover:bg-surface-200:bg-surface-600 flex items-center justify-center transition focus:outline-none">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 
                 <div class="p-6">
                     <div class="grid grid-cols-3 gap-3 mb-5">
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Grammar</p>
+                        <div class="bg-surface-50 rounded-2xl p-4 border border-surface-200 text-center">
+                            <p class="text-[9px] text-surface-400 font-bold uppercase tracking-wider mb-1">Grammar</p>
                             <div class="flex items-baseline justify-center gap-0.5">
-                                <span id="grammarScoreValue" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</span>
-                                <span class="text-xs text-slate-400">/10</span>
+                                <span id="grammarScoreValue" class="text-2xl font-light font-serif text-surface-900">0</span>
+                                <span class="text-xs text-surface-400">/10</span>
                             </div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Clarity</p>
+                        <div class="bg-surface-50 rounded-2xl p-4 border border-surface-200 text-center">
+                            <p class="text-[9px] text-surface-400 font-bold uppercase tracking-wider mb-1">Clarity</p>
                             <div class="flex items-baseline justify-center gap-0.5">
-                                <span id="clarityScoreValue" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</span>
-                                <span class="text-xs text-slate-400">/10</span>
+                                <span id="clarityScoreValue" class="text-2xl font-light font-serif text-surface-900">0</span>
+                                <span class="text-xs text-surface-400">/10</span>
                             </div>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-1">Confidence</p>
+                        <div class="bg-surface-50 rounded-2xl p-4 border border-surface-200 text-center">
+                            <p class="text-[9px] text-surface-400 font-bold uppercase tracking-wider mb-1">Confidence</p>
                             <div class="flex items-baseline justify-center gap-0.5">
-                                <span id="confidenceScoreValue" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</span>
-                                <span class="text-xs text-slate-400">/10</span>
+                                <span id="confidenceScoreValue" class="text-2xl font-light font-serif text-surface-900">0</span>
+                                <span class="text-xs text-surface-400">/10</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="grammarCorrectionDetail" class="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl text-slate-700 dark:text-slate-300 text-sm leading-relaxed border border-slate-200 dark:border-slate-800 hidden shadow-inner"></div>
+                    <div id="grammarCorrectionDetail" class="p-4 bg-surface-50 rounded-2xl text-surface-700 text-sm leading-relaxed border border-surface-200 hidden shadow-inner"></div>
                 </div>
             </div>
         </div>
 
         <!-- Session Summary Modal -->
-        <div id="sessionSummary" class="hidden fixed inset-0 z-[9995] flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm transition-opacity">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-lg border border-slate-200 dark:border-slate-800 w-full max-w-lg overflow-hidden transform transition-all">
-                <div class="bg-slate-100 dark:bg-slate-800 p-5 text-slate-900 dark:text-white flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
+        <div id="sessionSummary" class="hidden fixed inset-0 z-[9995] flex items-center justify-center p-4 bg-surface-950/40 backdrop-blur-sm transition-opacity">
+            <div class="bg-white rounded-3xl shadow-lg border border-surface-200 w-full max-w-lg overflow-hidden transform transition-all">
+                <div class="bg-surface-100 p-5 text-surface-900 flex justify-between items-center border-b border-surface-200">
                     <div>
                         <h3 class="font-serif font-light text-lg flex items-center gap-2"><i class="fas fa-flag-checkered text-sm"></i> Session Summary</h3>
-                        <p class="text-xs text-slate-400 font-medium">Review your performance</p>
+                        <p class="text-xs text-surface-400 font-medium">Review your performance</p>
                     </div>
-                    <button id="closeSummaryBtn" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center transition focus:outline-none">
+                    <button id="closeSummaryBtn" class="w-8 h-8 rounded-full bg-white hover:bg-surface-200:bg-surface-600 flex items-center justify-center transition focus:outline-none">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-3 gap-3 mb-5">
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Messages</p>
-                            <p id="summaryMessages" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        <div class="bg-surface-50 rounded-2xl p-3 border border-surface-200 text-center">
+                            <p class="text-[9px] uppercase text-surface-400 font-bold tracking-wider mb-1">Messages</p>
+                            <p id="summaryMessages" class="text-2xl font-light font-serif text-surface-900">0</p>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Duration</p>
-                            <p id="summaryDuration" class="text-2xl font-light font-serif text-slate-900 dark:text-white">00:00</p>
+                        <div class="bg-surface-50 rounded-2xl p-3 border border-surface-200 text-center">
+                            <p class="text-[9px] uppercase text-surface-400 font-bold tracking-wider mb-1">Duration</p>
+                            <p id="summaryDuration" class="text-2xl font-light font-serif text-surface-900">00:00</p>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Checks</p>
-                            <p id="summaryChecks" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        <div class="bg-surface-50 rounded-2xl p-3 border border-surface-200 text-center">
+                            <p class="text-[9px] uppercase text-surface-400 font-bold tracking-wider mb-1">Checks</p>
+                            <p id="summaryChecks" class="text-2xl font-light font-serif text-surface-900">0</p>
                         </div>
                         
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Avg Grammar</p>
-                            <p id="summaryGrammarAvg" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        <div class="bg-surface-50 rounded-2xl p-3 border border-surface-200 text-center">
+                            <p class="text-[9px] uppercase text-surface-400 font-bold tracking-wider mb-1">Avg Grammar</p>
+                            <p id="summaryGrammarAvg" class="text-2xl font-light font-serif text-surface-900">0</p>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Avg Clarity</p>
-                            <p id="summaryClarityAvg" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        <div class="bg-surface-50 rounded-2xl p-3 border border-surface-200 text-center">
+                            <p class="text-[9px] uppercase text-surface-400 font-bold tracking-wider mb-1">Avg Clarity</p>
+                            <p id="summaryClarityAvg" class="text-2xl font-light font-serif text-surface-900">0</p>
                         </div>
-                        <div class="bg-slate-50 dark:bg-slate-800/40 rounded-2xl p-3 border border-slate-200 dark:border-slate-800 text-center">
-                            <p class="text-[9px] uppercase text-slate-400 font-bold tracking-wider mb-1">Avg Confidence</p>
-                            <p id="summaryConfidenceAvg" class="text-2xl font-light font-serif text-slate-900 dark:text-white">0</p>
+                        <div class="bg-surface-50 rounded-2xl p-3 border border-surface-200 text-center">
+                            <p class="text-[9px] uppercase text-surface-400 font-bold tracking-wider mb-1">Avg Confidence</p>
+                            <p id="summaryConfidenceAvg" class="text-2xl font-light font-serif text-surface-900">0</p>
                         </div>
                     </div>
-                    <div id="summaryRecommendation" class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 text-sm text-slate-700 dark:text-slate-300 mb-5 border border-slate-200 dark:border-slate-800"></div>
-                    <button id="restartSessionBtn" class="w-full bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white font-bold py-3.5 rounded-full transition shadow-sm flex justify-center items-center gap-2 group">
+                    <div id="summaryRecommendation" class="bg-surface-50 rounded-2xl p-4 text-sm text-surface-700 mb-5 border border-surface-200"></div>
+                    <button id="restartSessionBtn" class="w-full bg-[#292524] hover:bg-[#0c0a09]:bg-stone-600 text-white font-bold py-3.5 rounded-full transition shadow-sm flex justify-center items-center gap-2 group">
                         <i class="fas fa-redo group-hover:-rotate-90 transition-transform duration-300"></i> Restart Session
                     </button>
                 </div>
@@ -269,19 +253,19 @@
         </div>
 
         <!-- Quick Grammar Panel -->
-        <div id="quickGrammarPanel" class="hidden relative z-10 mb-4 bg-slate-100/90 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 transform transition-all animate-slide-up">
+        <div id="quickGrammarPanel" class="hidden relative z-10 mb-4 bg-surface-100/90 backdrop-blur-md rounded-2xl shadow-sm border border-surface-200 p-4 transform transition-all animate-slide-up">
             <div class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
+                <div class="w-8 h-8 rounded-full bg-surface-200 text-surface-800 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
                     <i class="fas fa-magic"></i>
                 </div>
                 <div class="flex-1">
-                    <p id="quickGrammarText" class="text-sm text-slate-800 dark:text-slate-200 font-medium leading-relaxed"></p>
+                    <p id="quickGrammarText" class="text-sm text-surface-800 font-medium leading-relaxed"></p>
                 </div>
                 <div class="flex flex-col gap-2 flex-shrink-0">
-                    <button id="showDetailedScoreBtn" class="w-8 h-8 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white hover:bg-slate-100 transition shadow-sm flex items-center justify-center group animate-pulse" title="View Score Details">
+                    <button id="showDetailedScoreBtn" class="w-8 h-8 rounded-full bg-white text-surface-800 hover:bg-surface-100 transition shadow-sm flex items-center justify-center group animate-pulse" title="View Score Details">
                         <i class="fas fa-exclamation-circle group-hover:scale-110 transition-transform text-lg text-amber-500"></i>
                     </button>
-                    <button onclick="document.getElementById('quickGrammarPanel').classList.add('hidden')" class="w-8 h-8 rounded-full text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center justify-center">
+                    <button onclick="document.getElementById('quickGrammarPanel').classList.add('hidden')" class="w-8 h-8 rounded-full text-surface-400 hover:bg-surface-200:bg-surface-700 transition flex items-center justify-center">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -289,11 +273,11 @@
         </div>
 
         <!-- Input Area -->
-        <div class="relative z-10 bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-5">
+        <div class="relative z-10 bg-white/90 rounded-3xl shadow-sm border border-surface-200 p-4 sm:p-5">
             <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="relative w-full">
-                    <input type="text" id="chatInput" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-full pl-5 pr-14 py-4 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-white transition font-medium" placeholder="Type your message here...">
-                    <button id="voiceBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-200/50 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 transition flex items-center justify-center group" title="Use voice input">
+                    <input type="text" id="chatInput" class="w-full bg-surface-50 border border-surface-200 rounded-full pl-5 pr-14 py-4 focus:outline-none focus:ring-2 focus:ring-surface-400 transition font-medium" placeholder="Type your message here...">
+                    <button id="voiceBtn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-surface-200/50 hover:bg-surface-200:bg-surface-700 text-surface-600 transition flex items-center justify-center group" title="Use voice input">
                         <i class="fas fa-microphone group-hover:scale-110 transition-transform"></i>
                     </button>
                 </div>
@@ -302,18 +286,18 @@
                     <button id="hintBtn" class="hidden flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white px-5 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group" title="Get a hint for your answer">
                         <i class="fas fa-lightbulb group-hover:scale-110 transition-transform"></i> <span class="hidden sm:inline">Hint</span>
                     </button>
-                    <button id="grammarCheckBtn" class="flex-1 sm:flex-none bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-5 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group" title="Check grammar of your input">
+                    <button id="grammarCheckBtn" class="flex-1 sm:flex-none bg-transparent hover:bg-surface-100:bg-surface-800 border border-surface-300 text-surface-800 px-5 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group" title="Check grammar of your input">
                         <i class="fas fa-magic group-hover:rotate-12 transition-transform"></i> <span class="hidden sm:inline">Fix</span>
                     </button>
-                    <button id="sendBtn" class="flex-1 sm:flex-none bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white px-6 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group">
+                    <button id="sendBtn" class="flex-1 sm:flex-none bg-[#292524] hover:bg-[#0c0a09]:bg-stone-600 text-white px-6 py-4 rounded-full transition font-bold flex items-center justify-center gap-2 group">
                         <i class="fas fa-paper-plane group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i> <span class="hidden sm:inline">Send</span>
                     </button>
-                    <button id="endSessionBtn" class="bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 px-4 py-4 rounded-full transition flex items-center justify-center" title="End Session">
+                    <button id="endSessionBtn" class="bg-red-50 hover:bg-red-100:bg-red-900/40 text-red-600 px-4 py-4 rounded-full transition flex items-center justify-center" title="End Session">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
             </div>
-            <div id="tutorialHintContainer" class="hidden mt-4 text-center text-[10px] text-slate-400 dark:text-slate-500 font-bold tracking-wider uppercase">
+            <div id="tutorialHintContainer" class="hidden mt-4 text-center text-[10px] text-surface-400 font-bold tracking-wider uppercase">
                 <i class="fas fa-lightbulb text-amber-400 mr-1"></i> <span id="inputHintText">Tap bubble & click 🔄 for styles • 🌐 for translate</span>
             </div>
         </div>
@@ -329,35 +313,35 @@
         <div id="altPopup" class="fixed hidden bg-white rounded-xl shadow-2xl p-4 max-w-sm z-50 border border-purple-200">
             <div class="flex justify-between items-center mb-2">
                 <p class="font-semibold text-purple-800 text-sm">📝 Alternative Styles</p>
-                <button onclick="document.getElementById('altPopup').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+                <button onclick="document.getElementById('altPopup').classList.add('hidden')" class="text-surface-400 hover:text-surface-600">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="space-y-2 text-sm">
-                <p><span class="font-medium text-green-600">🌿 Natural:</span> <span id="popupNatural" class="text-gray-700"></span></p>
-                <p><span class="font-medium text-blue-600">🎓 IELTS/Academic:</span> <span id="popupIelts" class="text-gray-700"></span></p>
-                <p><span class="font-medium text-purple-600">😎 Slang/Casual:</span> <span id="popupSlang" class="text-gray-700"></span></p>
+                <p><span class="font-medium text-green-600">🌿 Natural:</span> <span id="popupNatural" class="text-surface-700"></span></p>
+                <p><span class="font-medium text-primary-600">🎓 IELTS/Academic:</span> <span id="popupIelts" class="text-surface-700"></span></p>
+                <p><span class="font-medium text-purple-600">😎 Slang/Casual:</span> <span id="popupSlang" class="text-surface-700"></span></p>
             </div>
         </div>
         
         <!-- Translate Popup -->
-        <div id="translatePopup" class="fixed hidden bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-4 max-w-sm w-full z-50 border border-slate-200 dark:border-slate-700">
+        <div id="translatePopup" class="fixed hidden bg-white rounded-2xl shadow-2xl p-4 max-w-sm w-full z-50 border border-surface-200">
             <div class="flex justify-between items-center mb-3">
-                <p class="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2"><i class="fas fa-language text-indigo-500"></i> Terjemahkan Pesan</p>
-                <button onclick="document.getElementById('translatePopup').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <p class="font-bold text-surface-800 text-sm flex items-center gap-2"><i class="fas fa-language text-indigo-500"></i> Terjemahkan Pesan</p>
+                <button onclick="document.getElementById('translatePopup').classList.add('hidden')" class="text-surface-400 hover:text-surface-600:text-surface-300">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="space-y-2">
-                <button id="btnTransSmart" class="w-full text-left bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-4 py-2.5 rounded-xl text-sm font-medium transition flex justify-between items-center group">
+                <button id="btnTransSmart" class="w-full text-left bg-indigo-50 hover:bg-indigo-100:bg-indigo-900/50 text-indigo-700 px-4 py-2.5 rounded-xl text-sm font-medium transition flex justify-between items-center group">
                     <span>Hanya Kosakata Baru (Smart)</span>
                     <i class="fas fa-magic group-hover:scale-110 transition-transform"></i>
                 </button>
-                <button id="btnTransFull" class="w-full text-left bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-4 py-2.5 rounded-xl text-sm font-medium transition flex justify-between items-center group">
+                <button id="btnTransFull" class="w-full text-left bg-emerald-50 hover:bg-emerald-100:bg-emerald-900/50 text-emerald-700 px-4 py-2.5 rounded-xl text-sm font-medium transition flex justify-between items-center group">
                     <span>Terjemahkan Semua (Full)</span>
                     <i class="fas fa-align-left group-hover:scale-110 transition-transform"></i>
                 </button>
-                <div id="translateResultContainer" class="hidden mt-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-700 max-h-48 overflow-y-auto custom-scrollbar">
+                <div id="translateResultContainer" class="hidden mt-3 p-3 bg-surface-50 rounded-xl text-sm text-surface-700 border border-surface-100 max-h-48 overflow-y-auto custom-scrollbar">
                     <p id="translateResultText" class="leading-relaxed"></p>
                 </div>
             </div>
@@ -365,37 +349,37 @@
     </div>
 
     <!-- Welcome Onboarding Modal -->
-    <div id="obWelcomeModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md">
-        <div class="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-3xl shadow-2xl border border-white/20 dark:border-slate-800 w-full max-w-md overflow-hidden transform transition-all p-6">
+    <div id="obWelcomeModal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-surface-950/70 backdrop-blur-md">
+        <div class="bg-white text-surface-800 rounded-3xl shadow-2xl border border-white/20 w-full max-w-md overflow-hidden transform transition-all p-6">
             <div class="flex items-center gap-3 mb-4">
                 <span class="text-3xl">🚀</span>
                 <h3 class="font-extrabold text-xl bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">Selamat Datang di SpeakNow AI!</h3>
             </div>
             
-            <div class="space-y-4 text-sm leading-relaxed mb-6 font-medium text-slate-600 dark:text-slate-300">
+            <div class="space-y-4 text-sm leading-relaxed mb-6 font-medium text-surface-600">
                 <p>Mari belajar Bahasa Inggris secara interaktif dan menyenangkan dengan bantuan AI! Berikut adalah fitur utama yang bisa Anda gunakan:</p>
                 
-                <div class="flex gap-3 items-start bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div class="flex gap-3 items-start bg-surface-50 p-3 rounded-2xl border border-surface-100">
                     <span class="text-xl mt-0.5">✍️</span>
                     <div>
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100">Ketik & Rekam Suara</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Tulis kalimat Bahasa Inggris Anda, atau rekam secara langsung menggunakan tombol 🎤 <strong>Mic</strong>.</p>
+                        <h4 class="font-bold text-surface-800">Ketik & Rekam Suara</h4>
+                        <p class="text-xs text-surface-500">Tulis kalimat Bahasa Inggris Anda, atau rekam secara langsung menggunakan tombol 🎤 <strong>Mic</strong>.</p>
                     </div>
                 </div>
                 
-                <div class="flex gap-3 items-start bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div class="flex gap-3 items-start bg-surface-50 p-3 rounded-2xl border border-surface-100">
                     <span class="text-xl mt-0.5">✨</span>
                     <div>
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100">Periksa & Perbaiki Grammar</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Tekan tombol <strong>Fix ✨</strong> untuk mengoreksi tata bahasa secara otomatis dan melihat kesalahan kalimat Anda.</p>
+                        <h4 class="font-bold text-surface-800">Periksa & Perbaiki Grammar</h4>
+                        <p class="text-xs text-surface-500">Tekan tombol <strong>Fix ✨</strong> untuk mengoreksi tata bahasa secara otomatis dan melihat kesalahan kalimat Anda.</p>
                     </div>
                 </div>
                 
-                <div class="flex gap-3 items-start bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div class="flex gap-3 items-start bg-surface-50 p-3 rounded-2xl border border-surface-100">
                     <span class="text-xl mt-0.5">📊</span>
                     <div>
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100">Analisis Skor Performa</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Dapatkan analisis skor mendalam untuk Grammar, Clarity, dan Confidence melalui panel yang tersedia.</p>
+                        <h4 class="font-bold text-surface-800">Analisis Skor Performa</h4>
+                        <p class="text-xs text-surface-500">Dapatkan analisis skor mendalam untuk Grammar, Clarity, dan Confidence melalui panel yang tersedia.</p>
                     </div>
                 </div>
             </div>
@@ -407,10 +391,10 @@
     </div>
 
     <!-- ===== Tutorial Overlay & Floating Guide Card ===== -->
-    <div id="obOverlay" class="fixed inset-0 z-[9990] bg-slate-950/80 backdrop-blur-sm hidden transition-opacity duration-300 pointer-events-auto"></div>
+    <div id="obOverlay" class="fixed inset-0 z-[9990] bg-surface-950/80 backdrop-blur-sm hidden transition-opacity duration-300 pointer-events-auto"></div>
 
     <div id="obGuideCard" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-[9992] w-full max-w-sm">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-700 overflow-hidden">
+        <div class="bg-white rounded-3xl shadow-2xl border border-surface-200/80 overflow-hidden">
             <div id="obGuideCardInner" class="p-5"></div>
         </div>
     </div>
@@ -638,26 +622,26 @@
                 messageDiv.innerHTML = `
                     <div class="bg-indigo-600 text-white rounded-2xl rounded-tr-sm p-4 max-w-[85%] relative shadow-md shadow-indigo-600/20 font-medium">
                         <p class="text-white leading-relaxed">${safeText}</p>
-                        <button onclick="showAlternative('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn absolute -left-3 -top-3 bg-white dark:bg-slate-800 hover:bg-purple-500 hover:text-white text-indigo-500 rounded-full w-8 h-8 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm border border-indigo-100 dark:border-slate-700">
+                        <button onclick="showAlternative('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn absolute -left-3 -top-3 bg-white hover:bg-purple-500 hover:text-white text-indigo-500 rounded-full w-8 h-8 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm border border-indigo-100">
                             <i class="fas fa-sync-alt text-[10px]"></i>
                         </button>
                     </div>
-                    <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
-                        <i class="fas fa-user text-indigo-600 dark:text-indigo-400"></i>
+                    <div class="w-10 h-10 bg-indigo-100 border border-indigo-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+                        <i class="fas fa-user text-indigo-600"></i>
                     </div>
                 `;
             } else {
                 messageDiv.innerHTML = `
-                    <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
-                        <i class="fas fa-robot text-emerald-600 dark:text-emerald-400"></i>
+                    <div class="w-10 h-10 bg-emerald-100 border border-emerald-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm mt-1">
+                        <i class="fas fa-robot text-emerald-600"></i>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm p-4 max-w-[85%] relative shadow-md shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 font-medium">
+                    <div class="bg-white text-surface-800 rounded-2xl rounded-tl-sm p-4 max-w-[85%] relative shadow-md shadow-surface-200/50 border border-surface-100 font-medium">
                         <p class="leading-relaxed">${safeText}</p>
                         <div class="absolute -right-3 -top-3 flex flex-row-reverse gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                            <button onclick="showAlternative('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn bg-white dark:bg-slate-700 hover:bg-purple-500 hover:text-white text-slate-500 rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-600" title="Alternative Styles">
+                            <button onclick="showAlternative('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn bg-white hover:bg-purple-500 hover:text-white text-surface-500 rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-surface-200" title="Alternative Styles">
                                 <i class="fas fa-sync-alt text-[10px]"></i>
                             </button>
-                            <button onclick="showTranslateOptions('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn bg-white dark:bg-slate-700 hover:bg-emerald-500 hover:text-white text-slate-500 rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-slate-200 dark:border-slate-600" title="Terjemahkan">
+                            <button onclick="showTranslateOptions('${safeText.replace(/'/g, "\\'")}', this)" class="alt-btn bg-white hover:bg-emerald-500 hover:text-white text-surface-500 rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-surface-200" title="Terjemahkan">
                                 <i class="fas fa-language text-xs"></i>
                             </button>
                         </div>
@@ -764,14 +748,14 @@
             typingDiv.id = 'typingIndicator';
             typingDiv.className = 'flex items-start gap-3';
             typingDiv.innerHTML = `
-                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-robot text-blue-600 text-sm"></i>
+                <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-primary-600 text-sm"></i>
                 </div>
-                <div class="bg-gray-100 rounded-lg p-3">
+                <div class="bg-surface-100 rounded-lg p-3">
                     <div class="flex gap-1">
-                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
-                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                        <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                        <div class="w-2 h-2 bg-surface-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                        <div class="w-2 h-2 bg-surface-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-surface-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
                     </div>
                 </div>
             `;
@@ -937,7 +921,7 @@
             isListening = false;
             if (voiceButton) {
                 voiceButton.classList.remove('bg-red-500', 'hover:bg-red-600', 'text-white');
-                voiceButton.classList.add('bg-gray-300', 'hover:bg-green-500', 'text-gray-700');
+                voiceButton.classList.add('bg-surface-300', 'hover:bg-green-500', 'text-surface-700');
                 voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
             }
         }
@@ -961,7 +945,7 @@
             mediaRecognition.onstart = () => {
                 isListening = true;
                 if (voiceButton) {
-                    voiceButton.classList.remove('bg-gray-300', 'hover:bg-green-500', 'text-gray-700');
+                    voiceButton.classList.remove('bg-surface-300', 'hover:bg-green-500', 'text-surface-700');
                     voiceButton.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white');
                     voiceButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
                 }
@@ -1212,70 +1196,70 @@
         function obStep1Html() {
             return `
             <div class="absolute top-3 right-3 z-10">
-                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <button onclick="obFinishTutorial(event)" class="text-surface-400 hover:text-surface-600:text-surface-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-100:bg-surface-800 transition">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="flex items-center gap-3 mb-3 pr-8">
-                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-lg">👆</span>
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center text-lg">👆</span>
                 <div class="flex-1">
-                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Langkah 1 — Ketuk Bubble AI</p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500">Tutorial interaktif (1 dari 3)</p>
+                    <p class="font-extrabold text-surface-800 text-sm">Langkah 1 — Ketuk Bubble AI</p>
+                    <p class="text-xs text-surface-400">Tutorial interaktif (1 dari 3)</p>
                 </div>
             </div>
-            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                Ketuk <strong class="text-indigo-600 dark:text-indigo-400">bubble chat AI</strong> yang sedang bersinar untuk membuka fitur tersembunyi! ✨
+            <p class="text-sm text-surface-700 leading-relaxed">
+                Ketuk <strong class="text-indigo-600">bubble chat AI</strong> yang sedang bersinar untuk membuka fitur tersembunyi! ✨
             </p>
-            <button onclick="simulateFirstBubbleClick()" class="mt-4 w-full bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-bold py-2.5 rounded-xl transition text-xs border border-indigo-200 dark:border-indigo-800 flex items-center justify-center gap-2">
+            <button onclick="simulateFirstBubbleClick()" class="mt-4 w-full bg-indigo-50 hover:bg-indigo-100:bg-indigo-900/40 text-indigo-700 font-bold py-2.5 rounded-xl transition text-xs border border-indigo-200 flex items-center justify-center gap-2">
                 Atau klik di sini untuk Lanjut <i class="fas fa-arrow-right"></i>
             </button>`;
         }
         function obStep2Html() {
             return `
             <div class="absolute top-3 right-3 z-10">
-                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <button onclick="obFinishTutorial(event)" class="text-surface-400 hover:text-surface-600:text-surface-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-100:bg-surface-800 transition">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="flex items-center gap-3 mb-3 pr-8">
-                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-lg">🎯</span>
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center text-lg">🎯</span>
                 <div class="flex-1">
-                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Langkah 2 — Pilih Fitur</p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500">Tutorial interaktif (2 dari 3)</p>
+                    <p class="font-extrabold text-surface-800 text-sm">Langkah 2 — Pilih Fitur</p>
+                    <p class="text-xs text-surface-400">Tutorial interaktif (2 dari 3)</p>
                 </div>
             </div>
-            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+            <p class="text-sm text-surface-700 leading-relaxed mb-3">
                 Dua ikon fitur muncul di pojok atas bubble. Klik salah satunya!
             </p>
-            <button onclick="simulateAltClick()" class="w-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold py-2.5 rounded-xl transition text-xs border border-purple-200 dark:border-purple-800 flex items-center justify-center gap-2">
+            <button onclick="simulateAltClick()" class="w-full bg-purple-50 hover:bg-purple-100:bg-purple-900/40 text-purple-700 font-bold py-2.5 rounded-xl transition text-xs border border-purple-200 flex items-center justify-center gap-2">
                 Atau klik di sini untuk Lanjut <i class="fas fa-arrow-right"></i>
             </button>`;
         }
         function obStep3AltHtml() {
             return `
             <div class="absolute top-3 right-3 z-10">
-                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <button onclick="obFinishTutorial(event)" class="text-surface-400 hover:text-surface-600:text-surface-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-100:bg-surface-800 transition">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="flex items-center gap-3 mb-3 pr-8">
-                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-lg">🔄</span>
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center text-lg">🔄</span>
                 <div class="flex-1">
-                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Gaya Alternatif</p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500">Langkah 3 dari 3 — Hampir selesai!</p>
+                    <p class="font-extrabold text-surface-800 text-sm">Gaya Alternatif</p>
+                    <p class="text-xs text-surface-400">Langkah 3 dari 3 — Hampir selesai!</p>
                 </div>
             </div>
-            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-2">
-                Fitur <strong class="text-purple-600 dark:text-purple-400">🔄 Gaya Alternatif</strong> menampilkan <strong>3 versi</strong> kalimat:
+            <p class="text-sm text-surface-700 leading-relaxed mb-2">
+                Fitur <strong class="text-purple-600">🔄 Gaya Alternatif</strong> menampilkan <strong>3 versi</strong> kalimat:
             </p>
             <div class="space-y-1.5 mb-4">
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2 text-xs text-surface-600 bg-surface-50 rounded-xl px-3 py-2">
                     <span class="text-green-500 font-bold">🌿</span><span><strong>Natural</strong> — Percakapan sehari-hari</span>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2">
-                    <span class="text-blue-500 font-bold">🎓</span><span><strong>Academic</strong> — Formal / IELTS</span>
+                <div class="flex items-center gap-2 text-xs text-surface-600 bg-surface-50 rounded-xl px-3 py-2">
+                    <span class="text-primary-500 font-bold">🎓</span><span><strong>Academic</strong> — Formal / IELTS</span>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2 text-xs text-surface-600 bg-surface-50 rounded-xl px-3 py-2">
                     <span class="text-purple-500 font-bold">😎</span><span><strong>Casual</strong> — Santai / Slang</span>
                 </div>
             </div>
@@ -1286,25 +1270,25 @@
         function obStep3TransHtml() {
             return `
             <div class="absolute top-3 right-3 z-10">
-                <button onclick="obFinishTutorial(event)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <button onclick="obFinishTutorial(event)" class="text-surface-400 hover:text-surface-600:text-surface-300 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-100:bg-surface-800 transition">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="flex items-center gap-3 mb-3 pr-8">
-                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-lg">🌐</span>
+                <span class="w-9 h-9 flex-shrink-0 rounded-full bg-emerald-100 flex items-center justify-center text-lg">🌐</span>
                 <div class="flex-1">
-                    <p class="font-extrabold text-slate-800 dark:text-slate-100 text-sm">Terjemahkan</p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500">Langkah 3 dari 3 — Hampir selesai!</p>
+                    <p class="font-extrabold text-surface-800 text-sm">Terjemahkan</p>
+                    <p class="text-xs text-surface-400">Langkah 3 dari 3 — Hampir selesai!</p>
                 </div>
             </div>
-            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-2">
-                Fitur <strong class="text-emerald-600 dark:text-emerald-400">🌐 Terjemahkan</strong> punya 2 mode:
+            <p class="text-sm text-surface-700 leading-relaxed mb-2">
+                Fitur <strong class="text-emerald-600">🌐 Terjemahkan</strong> punya 2 mode:
             </p>
             <div class="space-y-1.5 mb-4">
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2 text-xs text-surface-600 bg-emerald-50 rounded-xl px-3 py-2">
                     <i class="fas fa-magic text-indigo-500"></i><span><strong>Smart</strong> — Terjemahkan kosakata sulit saja</span>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl px-3 py-2">
+                <div class="flex items-center gap-2 text-xs text-surface-600 bg-emerald-50 rounded-xl px-3 py-2">
                     <i class="fas fa-align-left text-emerald-500"></i><span><strong>Full</strong> — Terjemahkan seluruh kalimat</span>
                 </div>
             </div>
