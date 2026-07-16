@@ -7,7 +7,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.PrePersist;
 
+/**
+ * Entity representing a dictionary word learned by a user.
+ * Tracks mastery level, usage count, and last used timestamp.
+ */
 @Entity
 @Table(name = "user_words")
 public class WordEntry {
