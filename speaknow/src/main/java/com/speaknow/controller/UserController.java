@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing user profiles and online status.
+ * Provides public and private endpoints for user data retrieval.
+ */
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
