@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Preload Critical Images -->
+    <link rel="preload" href="/images/bg-main.svg?v=2" as="image">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         /* Custom scrollbar */
@@ -387,15 +389,14 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto place-items-center">
-                    <!-- Free Chat -->
-                    <a href="session.html" class="block bg-white rounded-2xl hover:shadow-lg transition-all overflow-hidden group">
-                        <img src="/images/freechat-bg.png?v=2" alt="Free Chat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    </a>
-
-
                     <!-- Voice Room -->
                     <a href="voice-chat.html" class="block bg-white rounded-2xl hover:shadow-lg transition-all overflow-hidden group">
                         <img src="/images/voice-bg.png?v=1" alt="Voice Room" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </a>
+
+                    <!-- Free Chat -->
+                    <a href="session.html" class="block bg-white rounded-2xl hover:shadow-lg transition-all overflow-hidden group">
+                        <img src="/images/freechat-bg.png?v=2" alt="Free Chat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </a>
 
                     <!-- Challenge Mode -->
