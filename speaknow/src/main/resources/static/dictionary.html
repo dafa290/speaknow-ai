@@ -476,19 +476,6 @@
             }
         });
 
-        // Theme toggle
-        let isDark = false;
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            isDark = !isDark;
-            if (isDark) {
-                document.body.classList.add('dark');
-                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
-            } else {
-                document.body.classList.remove('dark');
-                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon text-surface-600"></i>';
-            }
-        });
-
         // Load
         loadDictionary();
 
