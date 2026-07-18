@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,57 +10,30 @@
     <link rel="stylesheet" href="/assets/css/elevenlabs-theme.css">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter','system-ui','sans-serif'],
-                        serif: ['EB Garamond', 'Georgia', 'serif']
-                    },
                     colors: {
-                        gray: {
-                            50: '#f5f5f5',
-                            100: '#fafafa',
-                            200: '#e7e5e4',
-                            300: '#d6d3d1',
-                            400: '#a8a29e',
-                            500: '#78716c',
-                            600: '#292524',
-                            700: '#1c1917',
-                            800: '#0c0a09',
-                            900: '#0c0a09'
+                        primary: {
+                            50: '#f0f5ff', 100: '#e5edff', 200: '#cddbfe', 300: '#b4c6fc',
+                            400: '#8da2fb', 500: '#6875f5', 600: '#5850ec', 700: '#5145cd',
+                            800: '#42389d', 900: '#362f78'
                         },
-                        slate: {
-                            50: '#fafafa',
-                            100: '#f5f5f5',
-                            200: '#e7e5e4',
-                            300: '#d6d3d1',
-                            400: '#a8a29e',
-                            500: '#78716c',
-                            600: '#292524',
-                            700: '#1c1917',
-                            800: '#0c0a09',
-                            900: '#0c0a09'
-                        },
-                        blue: {
-                            50: '#fafafa',
-                            100: '#f5f5f5',
-                            200: '#e7e5e4',
-                            300: '#d6d3d1',
-                            400: '#a8a29e',
-                            500: '#78716c',
-                            600: '#292524',
-                            700: '#1c1917',
-                            800: '#0c0a09',
-                            900: '#0c0a09'
+                        surface: {
+                            50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1',
+                            400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155',
+                            800: '#1e293b', 900: '#0f172a'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['EB Garamond', 'Georgia', 'serif']
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-gray-50 dark:bg-gray-950 min-h-screen text-gray-800 dark:text-gray-200 transition-colors duration-300 relative">
+<body class="bg-surface-50 min-h-screen text-surface-800 transition-colors duration-300 relative">
 
     <!-- ElevenLabs Ambient Background Orbs -->
     <div class="orb-container">
@@ -75,18 +48,12 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div class="flex items-center gap-3">
-                <i class="fas fa-book-open text-3xl text-gray-600 dark:text-gray-400"></i>
-                <h1 class="text-3xl font-serif font-light text-gray-800 dark:text-white tracking-tight">Kamus Pintar</h1>
-                <span class="bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">📖 Kamus Personal</span>
+                <i class="fas fa-book-open text-3xl text-surface-600"></i>
+                <h1 class="text-3xl font-serif font-light text-surface-800 tracking-tight">Kamus Pintar</h1>
+                <span class="bg-surface-200 text-surface-700 text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">📖 Kamus Personal</span>
             </div>
             <div class="flex gap-2">
-                <button id="themeToggle" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-2 rounded-full shadow-sm hover:shadow-md transition w-10 h-10 flex items-center justify-center">
-                    <i class="fas fa-moon text-gray-600 dark:text-gray-400"></i>
-                </button>
-                <a href="login.html" class="bg-[#292524] text-white px-4 py-2.5 rounded-full shadow-sm hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 transition flex items-center gap-2 text-sm font-medium">
-                    <i class="fas fa-sign-in-alt text-xs"></i> Login
-                </a>
-                <a href="index.html" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2.5 rounded-full shadow-sm hover:shadow-md transition flex items-center gap-2 text-sm font-medium">
+                <a href="index.html" class="bg-white border border-surface-200 text-surface-700 px-4 py-2.5 rounded-full shadow-sm hover:shadow-md transition flex items-center gap-2 text-sm font-medium">
                     <i class="fas fa-arrow-left text-xs"></i> Dashboard
                 </a>
             </div>
@@ -94,39 +61,39 @@
 
         <!-- Stats Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
-                <i class="fas fa-book text-gray-400 mb-2 text-lg"></i>
-                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="totalWords">0</p>
-                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Total Kosakata</p>
+            <div class="elevenlabs-card p-5 border border-surface-200 text-center">
+                <i class="fas fa-book text-surface-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-surface-800" id="totalWords">0</p>
+                <p class="text-xs text-surface-400 font-bold uppercase tracking-wider mt-1">Total Kosakata</p>
             </div>
-            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
-                <i class="fas fa-check-circle text-gray-400 mb-2 text-lg"></i>
-                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="masteredCount">0</p>
-                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Dikuasai</p>
+            <div class="elevenlabs-card p-5 border border-surface-200 text-center">
+                <i class="fas fa-check-circle text-surface-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-surface-800" id="masteredCount">0</p>
+                <p class="text-xs text-surface-400 font-bold uppercase tracking-wider mt-1">Dikuasai</p>
             </div>
-            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
-                <i class="fas fa-hourglass-half text-gray-400 mb-2 text-lg"></i>
-                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="learningCount">0</p>
-                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Dipelajari</p>
+            <div class="elevenlabs-card p-5 border border-surface-200 text-center">
+                <i class="fas fa-hourglass-half text-surface-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-surface-800" id="learningCount">0</p>
+                <p class="text-xs text-surface-400 font-bold uppercase tracking-wider mt-1">Dipelajari</p>
             </div>
-            <div class="elevenlabs-card p-5 border border-gray-200 dark:border-gray-800 text-center">
-                <i class="fas fa-bullseye text-gray-400 mb-2 text-lg"></i>
-                <p class="text-3xl font-light font-serif text-gray-800 dark:text-white" id="targetCount">0</p>
-                <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">Target Baru</p>
+            <div class="elevenlabs-card p-5 border border-surface-200 text-center">
+                <i class="fas fa-bullseye text-surface-400 mb-2 text-lg"></i>
+                <p class="text-3xl font-light font-serif text-surface-800" id="targetCount">0</p>
+                <p class="text-xs text-surface-400 font-bold uppercase tracking-wider mt-1">Target Baru</p>
             </div>
         </div>
 
         <!-- Search & Filter Bar -->
-        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-4 mb-6 shadow-sm">
+        <div class="bg-white border border-surface-200 rounded-3xl p-4 mb-6 shadow-sm">
             <div class="flex flex-wrap gap-3">
                 <div class="flex-1 min-w-[200px]">
                     <div class="relative">
-                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-surface-400"></i>
                         <input type="text" id="searchInput" placeholder="Cari kata..." 
-                               class="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white rounded-full focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm">
+                               class="w-full pl-10 pr-4 py-2 border border-surface-200 rounded-full focus:outline-none focus:ring-2 focus:ring-surface-400 text-sm">
                     </div>
                 </div>
-                <select id="categoryFilter" class="px-4 py-2 border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white rounded-full text-sm">
+                <select id="categoryFilter" class="px-4 py-2 border border-surface-200 rounded-full text-sm">
                     <option value="all">📚 Semua Kategori</option>
                     <option value="noun">Kata Benda</option>
                     <option value="verb">Kata Kerja</option>
@@ -134,39 +101,39 @@
                     <option value="adverb">Kata Keterangan</option>
                     <option value="phrase">Frase</option>
                 </select>
-                <select id="statusFilter" class="px-4 py-2 border border-gray-200 dark:border-gray-800 dark:bg-gray-950 dark:text-white rounded-full text-sm">
+                <select id="statusFilter" class="px-4 py-2 border border-surface-200 rounded-full text-sm">
                     <option value="all">📋 Semua Status</option>
                     <option value="mastered">✅ Dikuasai</option>
                     <option value="learning">🟡 Sedang Dipelajari</option>
                     <option value="target">🎯 Target Belajar</option>
                 </select>
-                <button id="resetBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full transition text-sm font-medium">
+                <button id="resetBtn" class="px-4 py-2 bg-surface-100 hover:bg-surface-200:bg-surface-700 text-surface-700 rounded-full transition text-sm font-medium">
                     <i class="fas fa-undo-alt text-xs mr-1"></i> Reset
                 </button>
-                <button id="refreshBtn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full transition text-sm font-medium">
+                <button id="refreshBtn" class="px-4 py-2 bg-surface-100 hover:bg-surface-200:bg-surface-700 text-surface-700 rounded-full transition text-sm font-medium">
                     <i class="fas fa-sync-alt text-xs mr-1"></i> Refresh
                 </button>
-                <button id="generateTargetsBtn" class="px-5 py-2 bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white rounded-full transition text-sm font-medium shadow-sm flex items-center gap-2">
+                <button id="generateTargetsBtn" class="px-5 py-2 bg-[#292524] hover:bg-[#0c0a09]:bg-stone-600 text-white rounded-full transition text-sm font-medium shadow-sm flex items-center gap-2">
                     <i class="fas fa-magic text-xs"></i> Generate Target dari AI
                 </button>
             </div>
         </div>
 
         <!-- Dictionary List -->
-        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 overflow-hidden mb-6 shadow-sm">
+        <div class="bg-white rounded-3xl border border-surface-200 overflow-hidden mb-6 shadow-sm">
             <div id="dictionaryList" class="flex flex-col">
-                <div class="text-center py-16 text-gray-400">
-                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-gray-400"></i>
-                    <p class="font-medium text-slate-500">Memuat kamus...</p>
+                <div class="text-center py-16 text-surface-400">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-surface-400"></i>
+                    <p class="font-medium text-surface-500">Memuat kamus...</p>
                 </div>
             </div>
         </div>
 
         <!-- Empty State -->
         <div id="emptyState" class="hidden text-center py-16">
-            <i class="fas fa-search text-5xl text-gray-300 dark:text-gray-700 mb-4"></i>
-            <p class="text-gray-500 font-serif font-light text-xl">Belum ada kata dalam kamus</p>
-            <p class="text-gray-400 text-sm mt-1">Mulai bicara dengan AI untuk mengumpulkan kosakata</p>
+            <i class="fas fa-search text-5xl text-surface-300 mb-4"></i>
+            <p class="text-surface-500 font-serif font-light text-xl">Belum ada kata dalam kamus</p>
+            <p class="text-surface-400 text-sm mt-1">Mulai bicara dengan AI untuk mengumpulkan kosakata</p>
         </div>
 
         <!-- Pagination Controls -->
@@ -176,31 +143,31 @@
 
     <!-- Word Detail Modal -->
     <div id="wordModal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-white dark:bg-gray-900 rounded-3xl max-w-md w-full border border-gray-200 dark:border-gray-800 shadow-lg overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800">
-                <h3 class="text-2xl font-serif font-light text-gray-800 dark:text-white" id="modalWord"></h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-white w-8 h-8 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
+        <div class="bg-white rounded-3xl max-w-md w-full border border-surface-200 shadow-lg overflow-hidden">
+            <div class="px-6 py-4 border-b border-surface-200 flex justify-between items-center bg-surface-50">
+                <h3 class="text-2xl font-serif font-light text-surface-800" id="modalWord"></h3>
+                <button onclick="closeModal()" class="text-surface-400 hover:text-surface-600:text-white w-8 h-8 rounded-full bg-white flex items-center justify-center border border-surface-200">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
             <div class="p-6">
                 <div class="mb-4">
-                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Arti</span>
-                    <p id="modalMeaning" class="text-gray-800 dark:text-gray-200 mt-1 font-medium"></p>
+                    <span class="text-[10px] text-surface-400 uppercase font-bold tracking-wider">Arti</span>
+                    <p id="modalMeaning" class="text-surface-800 mt-1 font-medium"></p>
                 </div>
                 <div class="mb-4">
-                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Contoh</span>
-                    <p id="modalExample" class="text-gray-600 dark:text-gray-400 italic mt-1 leading-relaxed"></p>
+                    <span class="text-[10px] text-surface-400 uppercase font-bold tracking-wider">Contoh</span>
+                    <p id="modalExample" class="text-surface-600 italic mt-1 leading-relaxed"></p>
                 </div>
                 <div class="mb-4">
-                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Kategori</span>
-                    <p id="modalCategory" class="text-gray-800 dark:text-gray-300 mt-1 font-bold"></p>
+                    <span class="text-[10px] text-surface-400 uppercase font-bold tracking-wider">Kategori</span>
+                    <p id="modalCategory" class="text-surface-800 mt-1 font-bold"></p>
                 </div>
                 <div class="flex gap-2 mt-6">
-                    <button id="markMasteredBtn" class="flex-1 bg-[#292524] hover:bg-[#0c0a09] dark:bg-stone-700 dark:hover:bg-stone-600 text-white py-3 rounded-full transition font-semibold text-sm">
+                    <button id="markMasteredBtn" class="flex-1 bg-[#292524] hover:bg-[#0c0a09]:bg-stone-600 text-white py-3 rounded-full transition font-semibold text-sm">
                         <i class="fas fa-check mr-2"></i> Tandai Dikuasai
                     </button>
-                    <button onclick="closeModal()" class="flex-1 bg-gray-100 hover:bg-gray-250 dark:bg-gray-800 dark:hover:bg-gray-750 text-gray-700 dark:text-gray-300 py-3 rounded-full transition font-semibold text-sm">
+                    <button onclick="closeModal()" class="flex-1 bg-surface-100 hover:bg-surface-250:bg-surface-750 text-surface-700 py-3 rounded-full transition font-semibold text-sm">
                         Tutup
                     </button>
                 </div>
@@ -328,7 +295,7 @@
             
             let html = '';
             for (const letter of sortedLetters) {
-                const headerColor = letter === '🎯 Target Belajar' ? 'text-purple-600 bg-purple-50 border-purple-100' : 'text-blue-600 bg-slate-50 border-slate-100';
+                const headerColor = letter === '🎯 Target Belajar' ? 'text-purple-600 bg-purple-50 border-purple-100' : 'text-primary-600 bg-surface-50 border-surface-100';
                 const headerIcon = letter === '🎯 Target Belajar' ? 'fa-bullseye' : 'fa-bookmark';
                 
                 html += `<div class="px-6 py-2 border-b border-t first:border-t-0 font-bold text-sm uppercase tracking-wider flex items-center gap-2 ${headerColor}"><i class="fas ${headerIcon}"></i>${letter}</div>`;
@@ -346,19 +313,19 @@
                     const categoryIcon = getCategoryIcon(word.category);
                     
                     html += `
-                        <div class="p-5 cursor-pointer hover:bg-slate-50 transition-colors flex flex-col md:flex-row gap-4 justify-between items-start md:items-center border-b border-slate-100 last:border-0 group" onclick="openWordModal('${word.word}')">
+                        <div class="p-5 cursor-pointer hover:bg-surface-50 transition-colors flex flex-col md:flex-row gap-4 justify-between items-start md:items-center border-b border-surface-100 last:border-0 group" onclick="openWordModal('${word.word}')">
                             <div class="flex-1 min-w-0 w-full">
                                 <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                                    <h3 class="text-lg font-bold text-slate-800">${escapeHtml(word.word)}</h3>
-                                    <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-500 border border-slate-200 uppercase tracking-wide">
+                                    <h3 class="text-lg font-bold text-surface-800">${escapeHtml(word.word)}</h3>
+                                    <span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-surface-100 text-surface-500 border border-surface-200 uppercase tracking-wide">
                                         ${categoryIcon} ${word.category || 'unknown'}
                                     </span>
                                     ${statusBadge}
                                 </div>
-                                <p class="text-slate-600 text-sm mb-1.5 font-medium">${escapeHtml(word.meaning || 'Belum ada arti')}</p>
-                                ${word.example ? `<p class="text-slate-400 text-sm italic truncate">"${escapeHtml(word.example)}"</p>` : ''}
+                                <p class="text-surface-600 text-sm mb-1.5 font-medium">${escapeHtml(word.meaning || 'Belum ada arti')}</p>
+                                ${word.example ? `<p class="text-surface-400 text-sm italic truncate">"${escapeHtml(word.example)}"</p>` : ''}
                             </div>
-                            <div class="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all hidden md:block">
+                            <div class="text-surface-300 group-hover:text-primary-500 group-hover:translate-x-1 transition-all hidden md:block">
                                 <i class="fas fa-chevron-right"></i>
                             </div>
                         </div>
@@ -381,20 +348,20 @@
             
             // Prev button
             const prevDisabled = currentPage === 1;
-            html += `<button onclick="changePage(${currentPage - 1})" class="px-3 py-1 rounded-md border ${prevDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-blue-600 hover:bg-blue-50'}" ${prevDisabled ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            html += `<button onclick="changePage(${currentPage - 1})" class="px-3 py-1 rounded-md border ${prevDisabled ? 'bg-surface-100 text-surface-400 cursor-not-allowed' : 'bg-white text-primary-600 hover:bg-primary-50'}" ${prevDisabled ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
             
             // Pages
             for (let i = 1; i <= totalPages; i++) {
                 if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    html += `<button onclick="changePage(${i})" class="px-3 py-1 rounded-md border ${currentPage === i ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 hover:bg-blue-50'}">${i}</button>`;
+                    html += `<button onclick="changePage(${i})" class="px-3 py-1 rounded-md border ${currentPage === i ? 'bg-primary-600 text-white' : 'bg-white text-primary-600 hover:bg-primary-50'}">${i}</button>`;
                 } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    html += `<span class="px-2 text-gray-400">...</span>`;
+                    html += `<span class="px-2 text-surface-400">...</span>`;
                 }
             }
             
             // Next button
             const nextDisabled = currentPage === totalPages;
-            html += `<button onclick="changePage(${currentPage + 1})" class="px-3 py-1 rounded-md border ${nextDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-blue-600 hover:bg-blue-50'}" ${nextDisabled ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            html += `<button onclick="changePage(${currentPage + 1})" class="px-3 py-1 rounded-md border ${nextDisabled ? 'bg-surface-100 text-surface-400 cursor-not-allowed' : 'bg-white text-primary-600 hover:bg-primary-50'}" ${nextDisabled ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
             
             container.innerHTML = html;
         }
@@ -506,19 +473,6 @@
             } finally {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
-            }
-        });
-
-        // Theme toggle
-        let isDark = false;
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            isDark = !isDark;
-            if (isDark) {
-                document.body.classList.add('dark');
-                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun text-yellow-500"></i>';
-            } else {
-                document.body.classList.remove('dark');
-                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon text-gray-600"></i>';
             }
         });
 

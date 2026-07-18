@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,18 +14,18 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.8); }
     </style>
 </head>
-<body class="bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-surface-100 min-h-screen">
+<body class="bg-surface-50 text-surface-900 min-h-screen">
     <div class="max-w-6xl mx-auto px-4 py-4">
-        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 dark:bg-surface-800/90 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm backdrop-blur-md">
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 border border-surface-200 rounded-3xl p-5 shadow-sm backdrop-blur-md">
             <div>
-                <div class="inline-flex items-center gap-3 text-primary-700 dark:text-primary-300 font-semibold text-lg">
+                <div class="inline-flex items-center gap-3 text-primary-700 font-semibold text-lg">
                     <i class="fas fa-user-friends"></i>
                     <span>Contacts</span>
                 </div>
-                <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Browse learners and start a live chat instantly.</p>
+                <p class="mt-1 text-sm text-surface-500">Browse learners and start a live chat instantly.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <button onclick="goHome()" class="px-4 py-2 rounded-2xl bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-100 hover:bg-surface-200 transition">Dashboard</button>
+                <button onclick="goHome()" class="px-4 py-2 rounded-2xl bg-surface-100 text-surface-700 hover:bg-surface-200 transition">Dashboard</button>
                 <button onclick="goChat()" class="px-4 py-2 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition">New Chat</button>
                 <button onclick="logout()" class="px-4 py-2 rounded-2xl bg-rose-500 text-white hover:bg-rose-600 transition">Logout</button>
             </div>
@@ -33,20 +33,20 @@
 
         <main class="mt-6 space-y-6">
             <section class="grid gap-6 lg:grid-cols-[1fr_320px]">
-                <div class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+                <div class="bg-white border border-surface-200 rounded-3xl p-5 shadow-sm">
                     <div class="flex items-center justify-between mb-5">
                         <div>
                             <h1 class="text-xl font-semibold">Message Hub</h1>
-                            <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">Your recent unread messages and active learners.</p>
+                            <p class="mt-1 text-sm text-surface-500">Your recent unread messages and active learners.</p>
                         </div>
-                        <span id="unreadCount" class="rounded-full bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-200 px-3 py-1 text-xs font-semibold">0 unread</span>
+                        <span id="unreadCount" class="rounded-full bg-rose-100 text-rose-700 px-3 py-1 text-xs font-semibold">0 unread</span>
                     </div>
                     <div id="unreadList" class="space-y-3"></div>
                 </div>
 
-                <aside class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
-                    <h2 class="text-sm font-semibold text-surface-900 dark:text-surface-100">Tips</h2>
-                    <ul class="mt-3 space-y-3 text-sm text-surface-500 dark:text-surface-400">
+                <aside class="bg-white border border-surface-200 rounded-3xl p-5 shadow-sm">
+                    <h2 class="text-sm font-semibold text-surface-900">Tips</h2>
+                    <ul class="mt-3 space-y-3 text-sm text-surface-500">
                         <li>• Select a learner and start chatting in real time.</li>
                         <li>• Your messages are delivered instantly with WebSocket.</li>
                         <li>• Keep your profile online to show up in discovery.</li>
@@ -54,7 +54,7 @@
                 </aside>
             </section>
 
-            <section class="bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-3xl p-5 shadow-sm">
+            <section class="bg-white border border-surface-200 rounded-3xl p-5 shadow-sm">
                 <div class="flex items-center justify-between mb-5">
                     <h2 class="text-lg font-semibold">Available Learners</h2>
                     <button onclick="loadContacts()" class="text-sm font-semibold text-primary-600 hover:text-primary-700">Refresh</button>
@@ -97,8 +97,8 @@
                 return;
             }
 
-            document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-surface-500 dark:text-surface-400">Loading contacts…</div>';
-            document.getElementById('unreadList').innerHTML = '<div class="text-sm text-surface-500 dark:text-surface-400">Checking unread messages…</div>';
+            document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-surface-500">Loading contacts…</div>';
+            document.getElementById('unreadList').innerHTML = '<div class="text-sm text-surface-500">Checking unread messages…</div>';
 
             try {
                 const [usersRes, unreadRes] = await Promise.all([
@@ -115,38 +115,38 @@
 
                 document.getElementById('unreadCount').textContent = `${unreadData.count || unreadMessages.length} unread`;
                 document.getElementById('unreadList').innerHTML = unreadMessages.length === 0
-                    ? '<div class="text-sm text-surface-500 dark:text-surface-400">Tidak ada pesan baru.</div>'
+                    ? '<div class="text-sm text-surface-500">Tidak ada pesan baru.</div>'
                     : unreadMessages.map(msg => `
-                        <div class="rounded-3xl border border-surface-200 dark:border-surface-700 p-4 bg-surface-50 dark:bg-surface-900">
-                            <div class="flex items-center justify-between gap-3 text-sm text-surface-700 dark:text-surface-200">
+                        <div class="rounded-3xl border border-surface-200 p-4 bg-surface-50">
+                            <div class="flex items-center justify-between gap-3 text-sm text-surface-700">
                                 <strong>${msg.senderName}</strong>
                                 <button onclick="openChat(${msg.senderId})" class="text-primary-600 hover:text-primary-700 font-semibold">Balas</button>
                             </div>
-                            <p class="mt-2 text-sm text-surface-500 dark:text-surface-400">${escapeHtml(msg.content)}</p>
+                            <p class="mt-2 text-sm text-surface-500">${escapeHtml(msg.content)}</p>
                         </div>
                     `).join('');
 
                 if (contacts.length === 0) {
-                    document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-surface-500 dark:text-surface-400">Tidak ada learner lain untuk diajak chat.</div>';
+                    document.getElementById('contactsGrid').innerHTML = '<div class="text-center text-surface-500">Tidak ada learner lain untuk diajak chat.</div>';
                     return;
                 }
 
                 document.getElementById('contactsGrid').innerHTML = contacts.map(user => `
-                    <div class="rounded-3xl border border-surface-200 dark:border-surface-700 p-5 bg-surface-50 dark:bg-surface-900 shadow-sm">
+                    <div class="rounded-3xl border border-surface-200 p-5 bg-surface-50 shadow-sm">
                         <div class="flex items-center justify-between gap-3">
                             <div>
-                                <p class="font-semibold text-surface-900 dark:text-surface-100">${user.name || user.username}</p>
-                                <p class="text-sm text-surface-500 dark:text-surface-400">@${user.username}</p>
+                                <p class="font-semibold text-surface-900">${user.name || user.username}</p>
+                                <p class="text-sm text-surface-500">@${user.username}</p>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-[11px] ${user.isOnline ? 'bg-emerald-100 text-emerald-700' : 'bg-surface-200 dark:bg-surface-700 text-surface-600'}">${user.isOnline ? 'Online' : 'Offline'}</span>
+                            <span class="px-3 py-1 rounded-full text-[11px] ${user.isOnline ? 'bg-emerald-100 text-emerald-700' : 'bg-surface-200 text-surface-600'}">${user.isOnline ? 'Online' : 'Offline'}</span>
                         </div>
                         <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                            <div class="text-xs text-surface-500 dark:text-surface-400">Level <span class="font-semibold text-surface-900 dark:text-surface-100">${user.level}</span></div>
-                            <div class="text-xs text-surface-500 dark:text-surface-400">XP <span class="font-semibold text-surface-900 dark:text-surface-100">${user.totalXp}</span></div>
+                            <div class="text-xs text-surface-500">Level <span class="font-semibold text-surface-900">${user.level}</span></div>
+                            <div class="text-xs text-surface-500">XP <span class="font-semibold text-surface-900">${user.totalXp}</span></div>
                         </div>
                         <div class="mt-5 flex gap-3">
                             <button onclick="openChat(${user.id})" class="flex-1 rounded-2xl bg-primary-600 text-white py-2 text-sm hover:bg-primary-700 transition">Chat</button>
-                            <button onclick="viewProfile(${user.id})" class="flex-1 rounded-2xl border border-surface-300 dark:border-surface-700 py-2 text-sm text-surface-700 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-700 transition">Profile</button>
+                            <button onclick="viewProfile(${user.id})" class="flex-1 rounded-2xl border border-surface-300 py-2 text-sm text-surface-700 hover:bg-surface-100:bg-surface-700 transition">Profile</button>
                         </div>
                     </div>
                 `).join('');
