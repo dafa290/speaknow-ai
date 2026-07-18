@@ -1,20 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
-  <defs>
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF9D6C" stop-opacity="0.15" />
-      <stop offset="100%" stop-color="#FF5E36" stop-opacity="0.02" />
-    </linearGradient>
-    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FF9D6C" stop-opacity="0.8" />
-      <stop offset="100%" stop-color="#FF5E36" stop-opacity="0.8" />
-    </linearGradient>
-  </defs>
-  <circle cx="100" cy="100" r="80" fill="url(#grad1)" />
-  <rect x="60" y="50" width="80" height="100" rx="10" stroke="url(#grad2)" stroke-width="2.5" fill="none" opacity="0.3" />
-  <line x1="75" y1="80" x2="125" y2="80" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" opacity="0.7" />
-  <line x1="75" y1="100" x2="115" y2="100" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" opacity="0.7" />
-  <line x1="75" y1="120" x2="105" y2="120" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" opacity="0.7" />
-  <rect x="85" y="40" width="30" height="15" rx="4" fill="url(#grad2)" />
-  <circle cx="140" cy="130" r="22" fill="url(#grad1)" />
-  <path d="M132 130L137 135L148 124" stroke="url(#grad2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-</svg>
+version https://git-lfs.github.com/spec/v1
+oid sha256:f0978d9105109c76208ac80c087d923d4c298d459ba4ce7738ef3e75ab8d7514
+size 1350
