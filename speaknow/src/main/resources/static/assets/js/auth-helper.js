@@ -72,7 +72,17 @@
         <div style="font-size: 14px; font-weight: 600; letter-spacing: -0.01em;">Preparing your learning space...</div>
         <div style="font-size: 11px; color: #a8a29e; margin-top: 6px;">Setting up a guest account</div>
     `;
-    document.body.appendChild(loader);
+    
+    // Wait for body to be available before appending loader
+    function appendLoader() {
+        if (!document.body) {
+            setTimeout(appendLoader, 10);
+            return;
+        }
+        document.body.appendChild(loader);
+    }
+    appendLoader();
+
     
     // Auto register and login guest
     async function doAutoLogin() {
