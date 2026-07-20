@@ -43,4 +43,16 @@ public class ConversationHistory {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    @Override
+    public String toString() {
+        return "ConversationHistory{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", sessionId=" + sessionId +
+                ", role=" + role +
+                ", message=" + message +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
