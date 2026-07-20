@@ -32,4 +32,15 @@ public class ScoreResult {
 
     public String getFeedback() { return feedback; }
     public void setFeedback(String feedback) { this.feedback = feedback; }
+
+    @Override
+    public String toString() {
+        return "ScoreResult{" +
+                "grammar=" + grammar +
+                ", clarity=" + clarity +
+                ", confidence=" + confidence +
+                ", comment=" + comment +
+                ", feedback=" + feedback +
+                '}';
+    }
 }
