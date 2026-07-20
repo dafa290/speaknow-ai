@@ -39,4 +39,14 @@ public class ChatRequest {
     public void setMode(String mode) {
         this.mode = mode;
     }
+
+    @Override
+    public String toString() {
+        return "ChatRequest{" +
+                "userId=" + userId +
+                ", sessionId=" + sessionId +
+                ", message=" + message +
+                ", mode=" + mode +
+                '}';
+    }
 }
