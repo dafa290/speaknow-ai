@@ -44,4 +44,20 @@ public class SessionResponse {
 
     public Integer getXpEarned() { return xpEarned; }
     public void setXpEarned(Integer xpEarned) { this.xpEarned = xpEarned; }
+
+    @Override
+    public String toString() {
+        return "SessionResponse{" +
+                "grammarScore=" + grammarScore +
+                ", coherenceScore=" + coherenceScore +
+                ", speedScore=" + speedScore +
+                ", finalScore=" + finalScore +
+                ", correction=" + correction +
+                ", naturalAnswer=" + naturalAnswer +
+                ", academicAnswer=" + academicAnswer +
+                ", casualAnswer=" + casualAnswer +
+                ", hint=" + hint +
+                ", xpEarned=" + xpEarned +
+                '}';
+    }
 }
