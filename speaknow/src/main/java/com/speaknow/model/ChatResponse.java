@@ -31,4 +31,16 @@ public class ChatResponse {
 
     public String[] getTopicSuggestions() { return topicSuggestions; }
     public void setTopicSuggestions(String[] topicSuggestions) { this.topicSuggestions = topicSuggestions; }
+
+    @Override
+    public String toString() {
+        return "ChatResponse{" +
+                "message=" + message +
+                ", grammarFeedback=" + grammarFeedback +
+                ", hint=" + hint +
+                ", naturalAnswer=" + naturalAnswer +
+                ", academicAnswer=" + academicAnswer +
+                ", casualAnswer=" + casualAnswer +
+                '}';
+    }
 }
