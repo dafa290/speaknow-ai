@@ -91,4 +91,23 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username=" + username +
+                ", email=" + email +
+                ", passwordHash=" + passwordHash +
+                ", name=" + name +
+                ", totalXp=" + totalXp +
+                ", overallScore=" + overallScore +
+                ", level=" + level +
+                ", practiceCount=" + practiceCount +
+                ", guidedCount=" + guidedCount +
+                ", challengeCount=" + challengeCount +
+                ", lastActive=" + lastActive +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
