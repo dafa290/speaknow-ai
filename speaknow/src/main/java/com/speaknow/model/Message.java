@@ -60,4 +60,15 @@ public class Message {
 
     public Boolean getIsRead() { return isRead; }
     public void setIsRead(Boolean isRead) { this.isRead = isRead; }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", sender=" + sender +
+                ", recipient=" + recipient +
+                ", content=" + content +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
