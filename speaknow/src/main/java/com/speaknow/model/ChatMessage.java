@@ -68,4 +68,17 @@ public class ChatMessage {
     public void setIsRead(Boolean isRead) {
         this.isRead = isRead;
     }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "senderId=" + senderId +
+                ", senderName=" + senderName +
+                ", recipientId=" + recipientId +
+                ", recipientName=" + recipientName +
+                ", content=" + content +
+                ", timestamp=" + timestamp +
+                ", isRead=" + isRead +
+                '}';
+    }
 }
